@@ -9,7 +9,7 @@
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--g:#2db14a;--g2:#13923a;--gl:#e9f8ec;--ink:#1d2421;--mut:#7b8580;--bg:#f3f5f4;--red:#e5484d}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -126,6 +126,26 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 .dt.d1{background:linear-gradient(145deg,#34c759,#16893a)}.dt.d2{background:linear-gradient(145deg,#3d8bfd,#1a56c4)}.dt.d3{background:linear-gradient(145deg,#ff9f43,#d9650b)}.dt.d4{background:linear-gradient(145deg,#9b6bf2,#6334c2)}.dt.d5{background:linear-gradient(145deg,#f2628f,#c42d5c)}.dt.d6{background:linear-gradient(145deg,#20c2c9,#0b8a91)}
 .dash .dt{box-shadow:0 6px 16px rgba(0,0,0,.14)}.dash .dt b{color:#fff}.dash .dt span{color:rgba(255,255,255,.88)}.dash .dt .ic{background:rgba(255,255,255,.25);box-shadow:none}
 .back{border:0;background:#fff;border-radius:12px;padding:8px 14px;font-size:13px;font-weight:600;color:var(--g2);margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.lang{border:0;background:rgba(255,255,255,.22);color:#fff;font-weight:700;font-size:13px;padding:8px 14px;border-radius:20px;letter-spacing:.5px}
+.field select{width:100%;border:0;background:none;font-size:16px;font-family:inherit;padding:2px 0;outline:none;color:var(--ink)}
+html[dir=rtl] body{font-family:'Noto Nastaliq Urdu',Poppins,serif;line-height:1.9}
+html[dir=rtl] .field input,html[dir=rtl] .field select{font-family:Poppins,system-ui,sans-serif}
+html[dir=rtl] .dt,html[dir=rtl] .tile{text-align:right}
+html[dir=rtl] .tx .rt{text-align:left}
+html[dir=rtl] .field{padding:8px 14px 8px 8px}
+.ovl{position:fixed;inset:0;background:rgba(10,30,18,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.ovl.show{display:flex}
+.pop{background:#fff;border-radius:24px;padding:22px 18px;width:100%;max-width:340px;text-align:center;animation:fade .25s}
+.pop h3{font-size:17px;margin-bottom:4px}.pop p{font-size:12px;color:var(--mut);margin-bottom:16px}
+.lopt{width:100%;border:1.5px solid #e2e8e4;background:#fff;border-radius:16px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;font-size:15px;font-weight:600;color:var(--ink)}
+.lopt .f{width:38px;height:38px;border-radius:12px;background:var(--gl);display:grid;place-items:center;font-size:16px;color:var(--g2)}
+.lopt small{display:block;font-size:11px;color:var(--mut);font-weight:400}
+.lopt.on{border-color:var(--g);background:var(--gl)}
+.lopt .ur{font-family:'Noto Nastaliq Urdu',serif;font-size:18px;line-height:1.6}
+.tid{font-size:11px;color:var(--mut);margin-top:1px}
+.search{margin-bottom:12px}
+html[dir=rtl] .quick div{border-right:0;border-left:1px solid #eef1ef}html[dir=rtl] .quick div:last-child{border-left:0}
+.chip,.amt,.profit b,.quick b,.tile b{unicode-bidi:plaintext}
 </style>
 </head>
 <body>
@@ -133,6 +153,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 <div class="hero">
   <div class="topbar">
     <div class="brand"><div class="logo">Rs</div><div><h1 id="shopName">Easy Paisa Hisaab</h1><small id="todayLbl"></small></div></div>
+    <button class="lang" id="langBtn">🌐</button>
   </div>
   <div class="profit"><span>Aaj ka Profit</span><b id="heroProfit">Rs 0</b></div>
 </div>
@@ -164,6 +185,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     <div class="field"><div class="lbl"><label>Customer ka naam (zaroori nahi)</label><input id="fName" placeholder="Jaise: Ali"></div><button class="mic" data-for="fName">🎤</button></div>
     <div class="field"><div class="lbl"><label>Receiver ka EasyPaisa number</label><input id="fNum" type="tel" inputmode="numeric" placeholder="03xx xxxxxxx" maxlength="13"></div><button class="mic" data-for="fNum" data-num="1">🎤</button></div>
     <div class="field"><div class="lbl"><label>Kitne paise bheje (Rs)</label><input id="fAmt" type="number" inputmode="numeric" placeholder="Jaise: 5000"></div><button class="mic" data-for="fAmt" data-num="1">🎤</button></div>
+    <div class="field"><div class="lbl"><label>Transaction ID (zaroori nahi)</label><input id="fTid" placeholder="Jaise: 123456789012"></div><button class="mic" data-for="fTid" data-num="1" data-raw="1">🎤</button></div>
     <div class="two">
       <div class="field"><div class="lbl"><label>Fees li (Rs)</label><input id="fFee" type="number" inputmode="numeric" placeholder="0"></div></div>
       <div class="field"><div class="lbl"><label>Bank charges (Rs)</label><input id="fBank" type="number" inputmode="numeric" placeholder="0"></div></div>
@@ -203,6 +225,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
   <button class="back" data-go="p-home">← Wapas</button>
   <div class="card">
     <h2><i>📅</i>Purana Record</h2>
+    <div class="field search"><div class="lbl"><label>Dhoondein</label><input id="srch" placeholder="TID, number ya naam"></div></div>
     <div id="oldList"></div>
   </div>
 </section>
@@ -216,6 +239,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     <div class="field"><div class="lbl"><label>Har 1000 rupay par fees (Rs)</label><input id="sRate" type="number" inputmode="numeric"></div></div>
     <div class="field"><div class="lbl"><label>Kam se kam fees (Rs)</label><input id="sMin" type="number" inputmode="numeric"></div></div>
     <div class="field"><div class="lbl"><label>Meezan Bank charges har transfer par (Rs)</label><input id="sBank" type="number" inputmode="numeric"></div></div>
+    <div class="field"><div class="lbl"><label>Zaban</label><select id="sLang"><option value="ur">اردو (Urdu)</option><option value="ru">Roman Urdu</option><option value="en">English</option></select></div></div>
     <button class="btn" id="saveSet">Settings Save Karein</button>
   </div>
 </section>
@@ -241,6 +265,12 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
   <button data-p="p-old"><i>📅</i>Record</button>
 </nav>
 <div class="toast" id="toast"></div>
+<div class="ovl" id="langPop"><div class="pop">
+  <h3>🌐 Zaban chunein / Choose language</h3><p>زبان منتخب کریں</p>
+  <button class="lopt" data-l="ur"><span class="f">ا</span><span style="text-align:left"><span class="ur">اردو</span><small>Urdu</small></span></button>
+  <button class="lopt" data-l="ru"><span class="f">R</span><span style="text-align:left">Roman Urdu<small>Roman Urdu</small></span></button>
+  <button class="lopt" data-l="en"><span class="f">E</span><span style="text-align:left">English<small>English</small></span></button>
+</div></div>
 
 <script>
 const KEY='ep_data_v1';
@@ -254,10 +284,47 @@ const niceDay=k=>{const [y,m,d]=k.split('-');return +d+' '+MONTHS[m-1]+' '+y};
 const time=ts=>new Date(ts).toLocaleTimeString('en-PK',{hour:'numeric',minute:'2-digit'});
 const esc=s=>(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
+
+const EN={
+'Aaj ka Profit':"Today's Profit",'Payments':'Payments','Total Bheja':'Total Sent','Bank Baqi':'Bank Left',
+'Nayi Payment':'New Payment','Entry karein':'Add entry','Aaj Ka Hisaab':"Today's Summary",'Bank Balance':'Bank Balance','Meezan Bank':'Meezan Bank',
+'Purana Record':'Old Records','Din / Mahina':'Day / Month','Settings':'Settings','Fees, naam':'Fees, name','Backup':'Backup','Data mehfooz':'Keep data safe',
+'← Wapas':'← Back','Customer ka naam (zaroori nahi)':'Customer name (optional)','Receiver ka EasyPaisa number':"Receiver's EasyPaisa number",
+'Kitne paise bheje (Rs)':'Amount sent (Rs)','Fees li (Rs)':'Fee taken (Rs)','Bank charges (Rs)':'Bank charges (Rs)','Save Karein':'Save',
+'Edit chhorein':'Cancel edit','Aaj ki Payments':"Today's Payments",'Meezan Bank Balance':'Meezan Bank Balance','Aaj subah ka balance (Rs)':"This morning's balance (Rs)",
+'Save':'Save','Din mein bank mein paise daale (Rs)':'Money added to bank today (Rs)','Jama':'Add','Dukaan ka naam':'Shop name',
+'Har 1000 rupay par fees (Rs)':'Fee per Rs 1000 (Rs)','Kam se kam fees (Rs)':'Minimum fee (Rs)','Meezan Bank charges har transfer par (Rs)':'Meezan Bank charge per transfer (Rs)',
+'Zaban':'Language','Settings Save Karein':'Save Settings',
+'Data sirf is phone mein hai. Hafte mein ek baar backup file bana kar WhatsApp par khud ko bhej dein.':'Data is saved only on this phone. Once a week, make a backup file and send it to yourself on WhatsApp.',
+'⬇️ Backup banayein':'⬇️ Make backup','⬆️ Wapas layein':'⬆️ Restore','Home':'Home','Nayi Entry':'New Entry','Hisaab':'Summary','Record':'Records',
+'Jaise: Ali':'e.g. Ali','Jaise: 5000':'e.g. 5000','Jaise: 200000':'e.g. 200000','Jaise: 50000':'e.g. 50000','Jaise: Ali EasyPaisa Point':'e.g. Ali EasyPaisa Point',
+'Customer se lein':'Take from customer','Bank se jayega':'Goes from bank','Aapka Profit':'Your Profit','Amount likhein, fees aur profit khud ban jayenge.':'Enter amount, fee and profit are calculated automatically.',
+'Customer':'Customer','Aaj abhi koi payment nahi.':'No payments yet today.','Profit':'Profit','Fees Li':'Fees Taken','Bank Charges':'Bank Charges','Cash Mila':'Cash Received',
+'Subah ka balance likh kar Save dabayein, phir baqi balance khud nikalta rahega.':"Enter this morning's balance and tap Save, the remaining balance is then calculated automatically.",
+'Subah ka balance':'Morning balance','Jama kiye':'Added','Bheje + charges':'Sent + charges','Ab bank mein':'Now in bank','Abhi koi record nahi.':'No records yet.',
+'payments':'payments','Bheja':'Sent','Baqi':'Left','Badlav Save Karein':'Save Changes',
+'Save nahi hua!':'Could not save!','Amount likhein':'Enter amount','Sahi EasyPaisa number likhein':'Enter a valid EasyPaisa number','Entry badal di ✅':'Entry updated ✅',
+'Save ho gaya ✅':'Saved ✅','Yeh entry delete karni hai?':'Delete this entry?','Delete ho gayi':'Deleted','Balance save ✅':'Balance saved ✅','Raqam likhein':'Enter amount',
+'Jama ho gaya ✅':'Added ✅','Settings save ✅':'Settings saved ✅','Purana data is backup se badal jayega. Theek hai?':'Current data will be replaced by this backup. OK?',
+'Backup wapas aa gaya ✅':'Backup restored ✅','Ghalat file':'Wrong file','Is phone mein voice nahi chalti':'Voice is not supported on this phone','Awaaz samajh nahi aayi':'Could not understand the voice',
+'Payment Slip':'Payment Slip','Transaction ID (zaroori nahi)':'Transaction ID (optional)','Jaise: 123456789012':'e.g. 123456789012','Dhoondein':'Search','TID, number ya naam':'TID, number or name','Kuch nahi mila.':'Nothing found.','Easy Paisa Hisaab':'Easy Paisa Hisaab','Tareekh':'Date','Receiver':'Receiver','Amount':'Amount','Fees':'Fee','Total':'Total','Shukriya!':'Thank you!'
+};
+const UR={"Aaj ka Profit": "آج کا منافع", "Payments": "ادائیگیاں", "Total Bheja": "کل بھیجا", "Bank Baqi": "بینک باقی", "Nayi Payment": "نئی ادائیگی", "Entry karein": "اندراج کریں", "Aaj Ka Hisaab": "آج کا حساب", "Bank Balance": "بینک بیلنس", "Meezan Bank": "میزان بینک", "Purana Record": "پرانا ریکارڈ", "Din / Mahina": "دن / مہینہ", "Settings": "سیٹنگز", "Fees, naam": "فیس، نام", "Backup": "بیک اپ", "Data mehfooz": "ڈیٹا محفوظ", "← Wapas": "واپس →", "Customer ka naam (zaroori nahi)": "گاہک کا نام (ضروری نہیں)", "Receiver ka EasyPaisa number": "وصول کنندہ کا ایزی پیسہ نمبر", "Kitne paise bheje (Rs)": "کتنے پیسے بھیجے (روپے)", "Fees li (Rs)": "فیس لی (روپے)", "Bank charges (Rs)": "بینک چارجز (روپے)", "Save Karein": "محفوظ کریں", "Edit chhorein": "ترمیم چھوڑیں", "Aaj ki Payments": "آج کی ادائیگیاں", "Meezan Bank Balance": "میزان بینک بیلنس", "Aaj subah ka balance (Rs)": "آج صبح کا بیلنس (روپے)", "Save": "محفوظ", "Din mein bank mein paise daale (Rs)": "دن میں بینک میں پیسے ڈالے (روپے)", "Jama": "جمع", "Dukaan ka naam": "دکان کا نام", "Har 1000 rupay par fees (Rs)": "ہر 1000 روپے پر فیس (روپے)", "Kam se kam fees (Rs)": "کم از کم فیس (روپے)", "Meezan Bank charges har transfer par (Rs)": "ہر ٹرانسفر پر میزان بینک چارجز (روپے)", "Zaban": "زبان", "Settings Save Karein": "سیٹنگز محفوظ کریں", "Data sirf is phone mein hai. Hafte mein ek baar backup file bana kar WhatsApp par khud ko bhej dein.": "ڈیٹا صرف اس فون میں ہے۔ ہفتے میں ایک بار بیک اپ فائل بنا کر واٹس ایپ پر خود کو بھیج دیں۔", "⬇️ Backup banayein": "⬇️ بیک اپ بنائیں", "⬆️ Wapas layein": "⬆️ واپس لائیں", "Home": "ہوم", "Nayi Entry": "نیا اندراج", "Hisaab": "حساب", "Record": "ریکارڈ", "Jaise: Ali": "جیسے: علی", "Jaise: 5000": "جیسے: 5000", "Jaise: 200000": "جیسے: 200000", "Jaise: 50000": "جیسے: 50000", "Jaise: Ali EasyPaisa Point": "جیسے: علی ایزی پیسہ پوائنٹ", "Customer se lein": "گاہک سے لیں", "Bank se jayega": "بینک سے جائے گا", "Aapka Profit": "آپ کا منافع", "Amount likhein, fees aur profit khud ban jayenge.": "رقم لکھیں، فیس اور منافع خود بن جائیں گے۔", "Customer": "گاہک", "Aaj abhi koi payment nahi.": "آج ابھی کوئی ادائیگی نہیں۔", "Profit": "منافع", "Fees Li": "فیس لی", "Bank Charges": "بینک چارجز", "Cash Mila": "نقد ملا", "Subah ka balance likh kar Save dabayein, phir baqi balance khud nikalta rahega.": "صبح کا بیلنس لکھ کر محفوظ دبائیں، پھر باقی بیلنس خود نکلتا رہے گا۔", "Subah ka balance": "صبح کا بیلنس", "Jama kiye": "جمع کیے", "Bheje + charges": "بھیجے + چارجز", "Ab bank mein": "اب بینک میں", "Abhi koi record nahi.": "ابھی کوئی ریکارڈ نہیں۔", "payments": "ادائیگیاں", "Bheja": "بھیجا", "Baqi": "باقی", "Badlav Save Karein": "تبدیلی محفوظ کریں", "Save nahi hua!": "محفوظ نہیں ہوا!", "Amount likhein": "رقم لکھیں", "Sahi EasyPaisa number likhein": "درست ایزی پیسہ نمبر لکھیں", "Entry badal di ✅": "اندراج تبدیل ہو گیا ✅", "Save ho gaya ✅": "محفوظ ہو گیا ✅", "Yeh entry delete karni hai?": "یہ اندراج حذف کرنا ہے؟", "Delete ho gayi": "حذف ہو گیا", "Balance save ✅": "بیلنس محفوظ ✅", "Raqam likhein": "رقم لکھیں", "Jama ho gaya ✅": "جمع ہو گیا ✅", "Settings save ✅": "سیٹنگز محفوظ ✅", "Purana data is backup se badal jayega. Theek hai?": "پرانا ڈیٹا اس بیک اپ سے بدل جائے گا۔ ٹھیک ہے؟", "Backup wapas aa gaya ✅": "بیک اپ واپس آ گیا ✅", "Ghalat file": "غلط فائل", "Is phone mein voice nahi chalti": "اس فون میں آواز کا فیچر نہیں چلتا", "Awaaz samajh nahi aayi": "آواز سمجھ نہیں آئی", "Payment Slip": "ادائیگی کی رسید", "Tareekh": "تاریخ", "Receiver": "وصول کنندہ", "Amount": "رقم", "Fees": "فیس", "Total": "کل", "Shukriya!": "شکریہ!", "Transaction ID (zaroori nahi)": "ٹرانزیکشن آئی ڈی (ضروری نہیں)", "Jaise: 123456789012": "جیسے: 123456789012", "Dhoondein": "تلاش کریں", "TID, number ya naam": "ٹی آئی ڈی، نمبر یا نام", "Kuch nahi mila.": "کچھ نہیں ملا۔", "Easy Paisa Hisaab": "ایزی پیسہ حساب"};
+let LANG=(()=>{try{return localStorage.getItem('ep_lang')}catch(e){return null}})();
+const T=x=>LANG==='en'?(EN[x]??x):LANG==='ur'?(UR[x]??x):x;
+function applyLang(root){
+  root=root||document.body;
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentNode.closest('script,style')?2:1});
+  let n;while(n=w.nextNode()){if(n._o===undefined)n._o=n.nodeValue;const k=n._o.trim();if(k&&(EN[k]!==undefined||UR[k]!==undefined))n.nodeValue=n._o.replace(k,T(k))}
+  root.querySelectorAll('[placeholder]').forEach(el=>{if(el._op===undefined)el._op=el.placeholder;el.placeholder=T(el._op)});
+  const h=document.documentElement;h.lang=LANG==='en'?'en':'ur';h.dir=LANG==='ur'?'rtl':'ltr';
+}
+function setLang(l){LANG=l;$('saveBtn').textContent=T(editId?'Badlav Save Karein':'Save Karein');$('langPop').classList.remove('show');try{localStorage.setItem('ep_lang',l)}catch(e){}renderAll();updateCalc();applyLang()}
+
 let db={settings:{name:'',rate:20,min:20,bank:0},tx:[],bal:{}};
 try{const s=localStorage.getItem(KEY);if(s)db=Object.assign(db,JSON.parse(s));}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(db));}catch(e){toast('Save nahi hua!')}}
-function toast(t){const el=$('toast');el.textContent=t;el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',2200)}
+function toast(t){const el=$('toast');el.textContent=T(t);el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',2200)}
 
 let editId=null,feeTouched=false,bankTouched=false;
 function calcFee(a){const s=db.settings;if(a<=0)return 0;return Math.max(num(s.min),Math.ceil(a/1000)*num(s.rate))}
@@ -266,13 +333,13 @@ function updateCalc(){
   if(!feeTouched)$('fFee').value=a>0?calcFee(a):'';
   if(!bankTouched)$('fBank').value=a>0?num(db.settings.bank):'';
   const fee=num($('fFee').value),bank=num($('fBank').value);
-  $('calcBox').innerHTML=a>0?`<div class="r"><span>Customer se lein</span><b>${rs(a+fee)}</b></div><div class="r"><span>Bank se jayega</span><span>${rs(a+bank)}</span></div><div class="r t"><span>Aapka Profit</span><span>${rs(fee-bank)}</span></div>`:'Amount likhein, fees aur profit khud ban jayenge.';
+  $('calcBox').innerHTML=a>0?`<div class="r"><span>${T('Customer se lein')}</span><b>${rs(a+fee)}</b></div><div class="r"><span>${T('Bank se jayega')}</span><span>${rs(a+bank)}</span></div><div class="r t"><span>${T('Aapka Profit')}</span><span>${rs(fee-bank)}</span></div>`:T('Amount likhein, fees aur profit khud ban jayenge.');
 }
 $('fAmt').addEventListener('input',updateCalc);
 $('fFee').addEventListener('input',()=>{feeTouched=true;updateCalc()});
 $('fBank').addEventListener('input',()=>{bankTouched=true;updateCalc()});
 
-function resetForm(){['fName','fNum','fAmt','fFee','fBank'].forEach(i=>$(i).value='');feeTouched=bankTouched=false;editId=null;$('saveBtn').textContent='Save Karein';$('cancelEdit').style.display='none';updateCalc()}
+function resetForm(){['fName','fNum','fAmt','fTid','fFee','fBank'].forEach(i=>$(i).value='');feeTouched=bankTouched=false;editId=null;$('saveBtn').textContent=T('Save Karein');$('cancelEdit').style.display='none';updateCalc()}
 $('cancelEdit').onclick=resetForm;
 
 $('saveBtn').onclick=()=>{
@@ -280,26 +347,26 @@ $('saveBtn').onclick=()=>{
   if(a<=0)return toast('Amount likhein');
   if(nr.length<10)return toast('Sahi EasyPaisa number likhein');
   const fee=num($('fFee').value),bank=num($('fBank').value);
-  if(editId){Object.assign(db.tx.find(x=>x.id===editId),{name:$('fName').value.trim(),number:nr,amount:a,fee,bank});toast('Entry badal di ✅')}
-  else{db.tx.push({id:Date.now()+''+Math.floor(Math.random()*1000),ts:Date.now(),day:dayKey(),name:$('fName').value.trim(),number:nr,amount:a,fee,bank});toast('Save ho gaya ✅')}
+  if(editId){Object.assign(db.tx.find(x=>x.id===editId),{name:$('fName').value.trim(),number:nr,amount:a,fee,bank,tid:$('fTid').value.trim()});toast('Entry badal di ✅')}
+  else{db.tx.push({id:Date.now()+''+Math.floor(Math.random()*1000),ts:Date.now(),day:dayKey(),name:$('fName').value.trim(),number:nr,amount:a,fee,bank,tid:$('fTid').value.trim()});toast('Save ho gaya ✅')}
   save();resetForm();renderAll();
 };
 
 function txHtml(t){
-  const nm=esc(t.name)||'Customer';
+  const nm=esc(t.name)||T('Customer');
   return `<div class="tx"><div class="av">${nm[0].toUpperCase()}</div>
-  <div class="mid"><div class="nm">${nm}</div><div class="no">${t.number} · ${time(t.ts)}</div>
+  <div class="mid"><div class="nm">${nm}</div><div class="no">${t.number} · ${time(t.ts)}</div>${t.tid?`<div class="tid">TID: ${esc(t.tid)}</div>`:''}
   <div class="acts"><button class="wa" onclick="wa('${t.id}')">📲 WhatsApp</button><button onclick="editTx('${t.id}')">✏️</button><button class="dl" onclick="delTx('${t.id}')">🗑️</button></div></div>
-  <div class="rt"><div class="amt">${rs(t.amount)}</div><div class="chip">+${rs(t.fee-t.bank)}</div></div></div>`;
+  <div class="rt"><div class="amt">${rs(t.amount)}</div><div class="chip" dir="ltr">+${rs(t.fee-t.bank)}</div></div></div>`;
 }
-const emptyHtml=(ic,t)=>`<div class="empty"><i>${ic}</i>${t}</div>`;
+const emptyHtml=(ic,t)=>`<div class="empty"><i>${ic}</i>${T(t)}</div>`;
 
 window.editTx=id=>{const t=db.tx.find(x=>x.id===id);if(!t)return;go('p-new');editId=id;feeTouched=bankTouched=true;
-  $('fName').value=t.name;$('fNum').value=t.number;$('fAmt').value=t.amount;$('fFee').value=t.fee;$('fBank').value=t.bank;
-  $('saveBtn').textContent='Badlav Save Karein';$('cancelEdit').style.display='block';updateCalc();scrollTo({top:0,behavior:'smooth'})};
-window.delTx=id=>{if(!confirm('Yeh entry delete karni hai?'))return;db.tx=db.tx.filter(x=>x.id!==id);save();renderAll();toast('Delete ho gayi')};
+  $('fName').value=t.name;$('fNum').value=t.number;$('fAmt').value=t.amount;$('fTid').value=t.tid||'';$('fFee').value=t.fee;$('fBank').value=t.bank;
+  $('saveBtn').textContent=T('Badlav Save Karein');$('cancelEdit').style.display='block';updateCalc();scrollTo({top:0,behavior:'smooth'})};
+window.delTx=id=>{if(!confirm(T('Yeh entry delete karni hai?')))return;db.tx=db.tx.filter(x=>x.id!==id);save();renderAll();toast('Delete ho gayi')};
 window.wa=id=>{const t=db.tx.find(x=>x.id===id);if(!t)return;
-  const msg=`*${db.settings.name||'Easy Paisa'}*\nPayment Slip\nTareekh: ${niceDay(t.day)} ${time(t.ts)}\nReceiver: ${t.number}\nAmount: ${rs(t.amount)}\nFees: ${rs(t.fee)}\nTotal: ${rs(t.amount+t.fee)}\nShukriya!`;
+  const msg=`*${db.settings.name||'Easy Paisa'}*\n${T('Payment Slip')}\n${T('Tareekh')}: ${niceDay(t.day)} ${time(t.ts)}\n${T('Receiver')}: ${t.number}${t.tid?`\nTID: ${t.tid}`:''}\n${T('Amount')}: ${rs(t.amount)}\n${T('Fees')}: ${rs(t.fee)}\n${T('Total')}: ${rs(t.amount+t.fee)}\n${T('Shukriya!')}`;
   open('https://wa.me/?text='+encodeURIComponent(msg),'_blank')};
 
 function sums(list){return list.reduce((s,t)=>{s.amt+=t.amount;s.fee+=t.fee;s.bank+=t.bank;s.n++;return s},{amt:0,fee:0,bank:0,n:0})}
@@ -307,44 +374,47 @@ function sums(list){return list.reduce((s,t)=>{s.amt+=t.amount;s.fee+=t.fee;s.ba
 function renderToday(){
   const k=dayKey(),list=db.tx.filter(t=>t.day===k).sort((a,b)=>b.ts-a.ts),s=sums(list);
   $('todayList').innerHTML=list.length?list.map(txHtml).join(''):emptyHtml('🧾','Aaj abhi koi payment nahi.');
-  $('heroProfit').textContent=rs(s.fee-s.bank);$('tProfit').textContent='Profit '+rs(s.fee-s.bank);$('qN').textContent=s.n;$('qAmt').textContent=short(s.amt);
+  $('heroProfit').textContent=rs(s.fee-s.bank);$('tProfit').textContent=T('Profit')+' '+rs(s.fee-s.bank);$('qN').textContent=s.n;$('qAmt').textContent=short(s.amt);
   $('todayStats').innerHTML=`
-   <div class="tile c1"><div class="ic">💰</div><span>Profit</span><b>${rs(s.fee-s.bank)}</b></div>
-   <div class="tile c2"><div class="ic">🔢</div><span>Payments</span><b>${s.n}</b></div>
-   <div class="tile c3"><div class="ic">📤</div><span>Total Bheja</span><b>${rs(s.amt)}</b></div>
-   <div class="tile c4"><div class="ic">🏷️</div><span>Fees Li</span><b>${rs(s.fee)}</b></div>
-   <div class="tile"><div class="ic">🏦</div><span>Bank Charges</span><b>${rs(s.bank)}</b></div>
-   <div class="tile c1"><div class="ic">💵</div><span>Cash Mila</span><b>${rs(s.amt+s.fee)}</b></div>`;
+   <div class="tile c1"><div class="ic">💰</div><span>${T('Profit')}</span><b>${rs(s.fee-s.bank)}</b></div>
+   <div class="tile c2"><div class="ic">🔢</div><span>${T('Payments')}</span><b>${s.n}</b></div>
+   <div class="tile c3"><div class="ic">📤</div><span>${T('Total Bheja')}</span><b>${rs(s.amt)}</b></div>
+   <div class="tile c4"><div class="ic">🏷️</div><span>${T('Fees Li')}</span><b>${rs(s.fee)}</b></div>
+   <div class="tile"><div class="ic">🏦</div><span>${T('Bank Charges')}</span><b>${rs(s.bank)}</b></div>
+   <div class="tile c1"><div class="ic">💵</div><span>${T('Cash Mila')}</span><b>${rs(s.amt+s.fee)}</b></div>`;
   const b=db.bal[k]||{open:null,add:0};$('openBal').value=b.open??'';
-  if(b.open==null){$('balBox').innerHTML='<p class="note">Subah ka balance likh kar Save dabayein, phir baqi balance khud nikalta rahega.</p>';$('qBal').textContent='—';$('tBal').textContent='Meezan Bank'}
-  else{const left=num(b.open)+num(b.add)-s.amt-s.bank;$('qBal').textContent=short(left);$('tBal').textContent='Baqi '+rs(left);
-    $('balBox').innerHTML=`<div class="r"><span>Subah ka balance</span><span>${rs(b.open)}</span></div><div class="r"><span>Jama kiye</span><span>+ ${rs(b.add)}</span></div><div class="r"><span>Bheje + charges</span><span>− ${rs(s.amt+s.bank)}</span></div>
-    <div class="left ${left<0?'neg':''}"><span>Ab bank mein</span><b>${rs(left)}</b></div>`}
+  if(b.open==null){$('balBox').innerHTML='<p class="note">'+T('Subah ka balance likh kar Save dabayein, phir baqi balance khud nikalta rahega.')+'</p>';$('qBal').textContent='—';$('tBal').textContent=T('Meezan Bank')}
+  else{const left=num(b.open)+num(b.add)-s.amt-s.bank;$('qBal').textContent=short(left);$('tBal').textContent=T('Baqi')+' '+rs(left);
+    $('balBox').innerHTML=`<div class="r"><span>${T('Subah ka balance')}</span><span>${rs(b.open)}</span></div><div class="r"><span>${T('Jama kiye')}</span><span>+ ${rs(b.add)}</span></div><div class="r"><span>${T('Bheje + charges')}</span><span>− ${rs(s.amt+s.bank)}</span></div>
+    <div class="left ${left<0?'neg':''}"><span>${T('Ab bank mein')}</span><b>${rs(left)}</b></div>`}
 }
 $('saveBal').onclick=()=>{const k=dayKey();db.bal[k]=db.bal[k]||{add:0};db.bal[k].open=num($('openBal').value);save();renderToday();toast('Balance save ✅')};
 $('saveAdd').onclick=()=>{const k=dayKey(),v=num($('addBal').value);if(v<=0)return toast('Raqam likhein');db.bal[k]=db.bal[k]||{open:null,add:0};db.bal[k].add=num(db.bal[k].add)+v;$('addBal').value='';save();renderToday();toast('Jama ho gaya ✅')};
 
 function renderOld(){
-  const months={};
-  db.tx.forEach(t=>{const m=t.day.slice(0,7);(months[m]=months[m]||{})[t.day]=(months[m][t.day]||[]).concat(t)});
+  const months={},q=($('srch').value||'').trim().toLowerCase();
+  const src=q?db.tx.filter(t=>(t.tid||'').toLowerCase().includes(q)||t.number.includes(q.replace(/\D/g,'')||'§')||(t.name||'').toLowerCase().includes(q)):db.tx;
+  src.forEach(t=>{const m=t.day.slice(0,7);(months[m]=months[m]||{})[t.day]=(months[m][t.day]||[]).concat(t)});
   const mk=Object.keys(months).sort().reverse();
-  if(!mk.length){$('oldList').innerHTML=emptyHtml('📅','Abhi koi record nahi.');return}
+  if(!mk.length){$('oldList').innerHTML=emptyHtml(q?'🔍':'📅',q?'Kuch nahi mila.':'Abhi koi record nahi.');return}
   $('oldList').innerHTML=mk.map(m=>{
     const days=months[m],s=sums(Object.values(days).flat()),[y,mm]=m.split('-');
-    return `<details><summary><span>${MONTHS[mm-1]} ${y}<span class="sm">${s.n} payments · Bheja ${rs(s.amt)}</span></span><span class="p">${rs(s.fee-s.bank)}</span></summary>
+    return `<details><summary><span>${MONTHS[mm-1]} ${y}<span class="sm">${s.n} ${T('payments')} · ${T('Bheja')} ${rs(s.amt)}</span></span><span class="p">${rs(s.fee-s.bank)}</span></summary>
      ${Object.keys(days).sort().reverse().map(d=>{const ds=sums(days[d]);
-       return `<details><summary><span>${niceDay(d)}<span class="sm">${ds.n} payments</span></span><span class="p">${rs(ds.fee-ds.bank)}</span></summary>${days[d].sort((a,b)=>b.ts-a.ts).map(txHtml).join('')}</details>`}).join('')}
+       return `<details><summary><span>${niceDay(d)}<span class="sm">${ds.n} ${T('payments')}</span></span><span class="p">${rs(ds.fee-ds.bank)}</span></summary>${days[d].sort((a,b)=>b.ts-a.ts).map(txHtml).join('')}</details>`}).join('')}
     </details>`}).join('');
+  if(q)$('oldList').querySelectorAll('details').forEach(d=>d.open=true);
 }
+$('srch').addEventListener('input',()=>{renderOld();applyLang($('oldList'))});
 
-function renderSettings(){const s=db.settings;$('sName').value=s.name;$('sRate').value=s.rate;$('sMin').value=s.min;$('sBank').value=s.bank;$('shopName').textContent=s.name||'Easy Paisa Hisaab'}
-$('saveSet').onclick=()=>{db.settings={name:$('sName').value.trim(),rate:num($('sRate').value),min:num($('sMin').value),bank:num($('sBank').value)};save();renderAll();toast('Settings save ✅')};
+function renderSettings(){const s=db.settings;$('sName').value=s.name;$('sRate').value=s.rate;$('sMin').value=s.min;$('sBank').value=s.bank;$('sLang').value=LANG||'ru';$('shopName').textContent=s.name||T('Easy Paisa Hisaab')}
+$('saveSet').onclick=()=>{db.settings={name:$('sName').value.trim(),rate:num($('sRate').value),min:num($('sMin').value),bank:num($('sBank').value)};save();setLang($('sLang').value);toast('Settings save ✅')};
 
 $('expBtn').onclick=()=>{const blob=new Blob([JSON.stringify(db)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='easypaisa-backup-'+dayKey()+'.json';a.click()};
 $('impBtn').onclick=()=>$('impFile').click();
-$('impFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.tx)throw 0;if(!confirm('Purana data is backup se badal jayega. Theek hai?'))return;db=Object.assign({settings:{name:'',rate:20,min:20,bank:0},tx:[],bal:{}},d);save();renderAll();toast('Backup wapas aa gaya ✅')}catch(x){toast('Ghalat file')}};r.readAsText(f)};
+$('impFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.tx)throw 0;if(!confirm(T('Purana data is backup se badal jayega. Theek hai?')))return;db=Object.assign({settings:{name:'',rate:20,min:20,bank:0},tx:[],bal:{}},d);save();renderAll();toast('Backup wapas aa gaya ✅')}catch(x){toast('Ghalat file')}};r.readAsText(f)};
 
-function go(p){document.querySelectorAll('.page').forEach(s=>s.classList.toggle('show',s.id===p));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('act',b.dataset.p===p));if(p==='p-old')renderOld();if(p==='p-today'||p==='p-bank'||p==='p-home')renderToday();scrollTo(0,0)}
+function go(p){document.querySelectorAll('.page').forEach(s=>s.classList.toggle('show',s.id===p));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('act',b.dataset.p===p));if(p==='p-old'){renderOld();applyLang($('oldList'))}if(p==='p-today'||p==='p-bank'||p==='p-home')renderToday();scrollTo(0,0)}
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.p));
 
@@ -352,21 +422,24 @@ document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.p)
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 document.querySelectorAll('.mic').forEach(btn=>btn.onclick=()=>{
   if(!SR)return toast('Is phone mein voice nahi chalti');
-  const r=new SR();r.lang=btn.dataset.num?'en-IN':'ur-PK';r.interimResults=false;
+  const r=new SR();r.lang=btn.dataset.num?'en-IN':(LANG==='en'?'en-US':'ur-PK');r.interimResults=false;
   btn.classList.add('on');r.start();
   r.onresult=e=>{const t=e.results[0][0].transcript,inp=$(btn.dataset.for);
     if(btn.dataset.num){const v=t.toLowerCase().replace(/,/g,'');
       if(btn.dataset.for==='fAmt'){const m=v.match(/(\d+(?:\.\d+)?)\s*(thousand|hazar|hazaar|k\b|lakh|lac)?/);
         if(m){let n=parseFloat(m[1]);if(m[2])n*=/lakh|lac/.test(m[2])?100000:1000;inp.value=Math.round(n)}}
-      else inp.value=v.replace(/\D/g,'')}
+      else inp.value=btn.dataset.raw?v.replace(/[^0-9a-z]/gi,'').toUpperCase():v.replace(/\D/g,'')}
     else inp.value=t;
     inp.dispatchEvent(new Event('input'))};
   r.onend=()=>btn.classList.remove('on');r.onerror=()=>{btn.classList.remove('on');toast('Awaaz samajh nahi aayi')};
 });
 
-function renderAll(){renderSettings();renderToday();if($('p-old').classList.contains('show'))renderOld()}
+function renderAll(){renderSettings();renderToday();if($('p-old').classList.contains('show'))renderOld();applyLang()}
+function openLang(){document.querySelectorAll('.lopt').forEach(b=>b.classList.toggle('on',b.dataset.l===LANG));$('langPop').classList.add('show')}
+$('langBtn').onclick=openLang;
+document.querySelectorAll('.lopt').forEach(b=>b.onclick=()=>setLang(b.dataset.l));
 $('todayLbl').textContent=niceDay(dayKey());
-renderAll();updateCalc();
+renderAll();updateCalc();applyLang();if(!LANG)openLang();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
