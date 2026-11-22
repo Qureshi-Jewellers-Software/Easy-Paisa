@@ -2,86 +2,156 @@
 <html lang="ur">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="theme-color" content="#22a447">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2db14a">
 <title>Easy Paisa Hisaab</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f1f5f3;color:#1c2b24;padding-bottom:76px}
-header{background:linear-gradient(135deg,#3bb54a,#1f9a40);color:#fff;padding:14px 16px;position:sticky;top:0;z-index:5}
-header h1{font-size:19px}
-header small{opacity:.85;font-size:13px}
-main{padding:12px;max-width:560px;margin:auto}
-.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.card h2{font-size:16px;margin-bottom:10px;color:#22a447}
-label{display:block;font-size:13px;color:#4a5a52;margin:8px 0 4px}
-.row{display:flex;gap:8px;align-items:center}
-.row>*{flex:1}
-input,select{width:100%;padding:12px;border:1px solid #cfd8d3;border-radius:10px;font-size:16px;background:#fff}
-input:focus{outline:2px solid #22a447;border-color:transparent}
-.mic{flex:0 0 48px;height:48px;border-radius:10px;border:0;background:#e6f6e8;font-size:20px}
-.mic.on{background:#e53935;color:#fff}
-button.main{width:100%;padding:14px;border:0;border-radius:12px;background:#22a447;color:#fff;font-size:17px;font-weight:600;margin-top:12px}
-button.sec{padding:10px 12px;border:1px solid #22a447;border-radius:10px;background:#fff;color:#22a447;font-size:14px}
-button.del{border-color:#c62828;color:#c62828}
-.calc{background:#eef9ef;border-radius:10px;padding:10px;margin-top:10px;font-size:15px}
-.calc b{color:#22a447}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.stat{background:#eef9ef;border-radius:10px;padding:10px}
-.stat span{display:block;font-size:12px;color:#4a5a52}
-.stat b{font-size:18px}
-.stat.big{grid-column:1/3;background:#22a447;color:#fff}
-.stat.big span{color:#d7efe2}
-.stat.warn b{color:#c62828}
-.tx{border-bottom:1px solid #eef2f0;padding:10px 0}
+:root{--g:#2db14a;--g2:#13923a;--gl:#e9f8ec;--ink:#1d2421;--mut:#7b8580;--bg:#f3f5f4;--red:#e5484d}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:Poppins,system-ui,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:90px}
+button{font-family:inherit;cursor:pointer}
+
+/* HEADER */
+.hero{background:linear-gradient(150deg,#3cc35a 0%,var(--g) 45%,var(--g2) 100%);color:#fff;padding:18px 18px 70px;border-radius:0 0 28px 28px;position:relative;overflow:hidden}
+.hero:before,.hero:after{content:'';position:absolute;border-radius:50%;background:rgba(255,255,255,.08)}
+.hero:before{width:220px;height:220px;right:-60px;top:-80px}
+.hero:after{width:140px;height:140px;left:-40px;bottom:-60px}
+.topbar{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:40px;height:40px;border-radius:12px;background:#fff;color:var(--g);font-weight:700;display:grid;place-items:center;font-size:15px}
+.brand h1{font-size:16px;font-weight:600;line-height:1.2}
+.brand small{font-size:12px;opacity:.85}
+.profit{margin-top:22px;position:relative;z-index:1}
+.profit span{font-size:13px;opacity:.9}
+.profit b{display:block;font-size:34px;font-weight:700;letter-spacing:.3px}
+
+main{padding:0 14px;max-width:560px;margin:-52px auto 0;position:relative;z-index:2}
+
+/* QUICK STATS */
+.quick{background:#fff;border-radius:20px;padding:14px 8px;display:flex;box-shadow:0 8px 24px rgba(20,60,35,.10);margin-bottom:14px}
+.quick div{flex:1;text-align:center;border-right:1px solid #eef1ef}
+.quick div:last-child{border:0}
+.quick span{display:block;font-size:11px;color:var(--mut)}
+.quick b{font-size:15px;font-weight:600}
+
+.card{background:#fff;border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px rgba(20,60,35,.05)}
+.card h2{font-size:15px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card h2 i{font-style:normal;width:30px;height:30px;border-radius:10px;background:var(--gl);display:grid;place-items:center;font-size:15px}
+
+/* FORM */
+.field{background:#f4f6f5;border-radius:14px;padding:8px 8px 8px 14px;margin-bottom:10px;display:flex;align-items:center;gap:8px;border:1.5px solid transparent;transition:.15s}
+.field:focus-within{border-color:var(--g);background:#fff}
+.field .lbl{flex:1}
+.field label{display:block;font-size:11px;color:var(--mut)}
+.field input{width:100%;border:0;background:none;font-size:16px;font-family:inherit;padding:2px 0;outline:none;color:var(--ink)}
+.mic{flex:0 0 40px;height:40px;border-radius:50%;border:0;background:var(--g);color:#fff;font-size:17px;box-shadow:0 3px 8px rgba(45,177,74,.35)}
+.mic.on{background:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.1)}}
+.two{display:flex;gap:10px}.two .field{flex:1}
+
+.calc{border-radius:16px;padding:12px 14px;background:var(--gl);margin:4px 0 12px;font-size:13px;color:#3d4a43}
+.calc .r{display:flex;justify-content:space-between;padding:2px 0}
+.calc .r.t{border-top:1px dashed #b9dfc2;margin-top:6px;padding-top:8px;font-weight:600;color:var(--g2);font-size:15px}
+
+.btn{width:100%;padding:15px;border:0;border-radius:16px;background:linear-gradient(135deg,#38c057,var(--g2));color:#fff;font-size:16px;font-weight:600;box-shadow:0 6px 16px rgba(45,177,74,.35)}
+.btn:active{transform:scale(.98)}
+.ghost{width:100%;padding:12px;border:0;border-radius:14px;background:#f1f3f2;color:var(--mut);font-size:14px;margin-top:8px}
+
+/* TX LIST */
+.tx{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f0f2f1}
 .tx:last-child{border:0}
-.tx .top{display:flex;justify-content:space-between;font-weight:600}
-.tx .sub{font-size:13px;color:#5d6d65;margin-top:3px}
-.tx .acts{display:flex;gap:6px;margin-top:8px}
-.tx .acts button{flex:1;padding:8px;font-size:13px}
-.green{color:#22a447}
-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;border-top:1px solid #dde5e0;z-index:5}
-nav button{flex:1;border:0;background:none;padding:10px 4px 12px;font-size:12px;color:#5d6d65}
-nav button i{display:block;font-style:normal;font-size:20px}
-nav button.act{color:#22a447;font-weight:700}
-.page{display:none}.page.show{display:block}
-details{border-bottom:1px solid #eef2f0;padding:8px 0}
-summary{font-weight:600;cursor:pointer;display:flex;justify-content:space-between}
-.empty{color:#7a8a82;text-align:center;padding:16px;font-size:14px}
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1c2b24;color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;display:none;z-index:9}
-.note{font-size:12px;color:#7a8a82;margin-top:6px}
+.av{flex:0 0 44px;height:44px;border-radius:14px;background:var(--gl);color:var(--g2);font-weight:700;display:grid;place-items:center;font-size:16px}
+.tx .mid{flex:1;min-width:0}
+.tx .nm{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx .no{font-size:12px;color:var(--mut)}
+.tx .rt{text-align:right}
+.tx .amt{font-weight:600;font-size:15px}
+.chip{display:inline-block;font-size:11px;font-weight:600;color:var(--g2);background:var(--gl);padding:2px 8px;border-radius:20px;margin-top:3px}
+.acts{display:flex;gap:6px;margin-top:8px}
+.acts button{border:0;background:#f4f6f5;border-radius:10px;padding:6px 10px;font-size:12px;color:#44504a}
+.acts button.wa{background:#e7f8ee;color:#128c4a}
+.acts button.dl{background:#fdecec;color:var(--red)}
+
+/* STAT TILES */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{border-radius:18px;padding:14px;background:#f7f9f8}
+.tile .ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:16px;margin-bottom:8px;background:#fff}
+.tile span{display:block;font-size:11px;color:var(--mut)}
+.tile b{font-size:17px;font-weight:600}
+.tile.c1{background:#e9f8ec}.tile.c2{background:#e8f2fd}.tile.c3{background:#fff4e5}.tile.c4{background:#f3ecfd}
+.tile.wide{grid-column:1/3}
+
+.balbox{margin-top:12px}
+.balbox .r{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;color:#44504a}
+.balbox .left{margin-top:8px;border-radius:16px;padding:14px;background:linear-gradient(135deg,#38c057,var(--g2));color:#fff;display:flex;justify-content:space-between;align-items:center}
+.balbox .left.neg{background:linear-gradient(135deg,#f06a6e,#c93338)}
+.balbox .left b{font-size:20px}
+.mini{flex:0 0 auto;border:0;border-radius:12px;background:var(--g);color:#fff;padding:10px 14px;font-size:13px;font-weight:600}
+
+/* OLD */
+details{background:#f7f9f8;border-radius:16px;padding:12px 14px;margin-bottom:8px}
+details details{background:#fff;margin:8px 0 0}
+summary{list-style:none;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px}
+summary::-webkit-details-marker{display:none}
+summary .p{color:var(--g2)}
+.sm{font-size:11px;color:var(--mut);font-weight:400;display:block}
+
+/* NAV */
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;padding:8px 8px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -4px 20px rgba(0,0,0,.06);border-radius:22px 22px 0 0;z-index:9}
+nav button{flex:1;border:0;background:none;font-size:11px;color:var(--mut);padding:4px 0;display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button i{font-style:normal;font-size:19px;width:48px;height:30px;border-radius:15px;display:grid;place-items:center;transition:.2s}
+nav button.act{color:var(--g2);font-weight:600}
+nav button.act i{background:var(--gl)}
+
+.page{display:none}.page.show{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}}
+.empty{color:var(--mut);text-align:center;padding:20px 10px;font-size:13px}
+.empty i{display:block;font-style:normal;font-size:30px;margin-bottom:6px}
+.note{font-size:12px;color:var(--mut);line-height:1.5}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#1d2421;color:#fff;padding:11px 20px;border-radius:30px;font-size:13px;display:none;z-index:20;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.row2{display:flex;gap:8px}.row2 button{flex:1}
+.out{border:1.5px solid var(--g);background:#fff;color:var(--g2);border-radius:14px;padding:12px;font-size:13px;font-weight:600}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}input[type=number]{-moz-appearance:textfield}
 </style>
 </head>
 <body>
-<header>
-  <h1 id="shopName">Easy Paisa Hisaab</h1>
-  <small id="todayLbl"></small>
-</header>
+
+<div class="hero">
+  <div class="topbar">
+    <div class="brand"><div class="logo">Rs</div><div><h1 id="shopName">Easy Paisa Hisaab</h1><small id="todayLbl"></small></div></div>
+  </div>
+  <div class="profit"><span>Aaj ka Profit</span><b id="heroProfit">Rs 0</b></div>
+</div>
 
 <main>
+  <div class="quick">
+    <div><span>Payments</span><b id="qN">0</b></div>
+    <div><span>Total Bheja</span><b id="qAmt">0</b></div>
+    <div><span>Bank Baqi</span><b id="qBal">—</b></div>
+  </div>
+
 <!-- NAYI ENTRY -->
 <section class="page show" id="p-new">
   <div class="card">
-    <h2>➕ Nayi Payment</h2>
-    <label>Customer ka naam (zaroori nahi)</label>
-    <div class="row"><input id="fName" placeholder="Jaise: Ali"><button class="mic" data-for="fName">🎤</button></div>
-    <label>Receiver ka EasyPaisa number</label>
-    <div class="row"><input id="fNum" type="tel" inputmode="numeric" placeholder="03xx xxxxxxx" maxlength="13"><button class="mic" data-for="fNum" data-num="1">🎤</button></div>
-    <label>Kitne paise bheje (Rs)</label>
-    <div class="row"><input id="fAmt" type="number" inputmode="numeric" placeholder="Jaise: 5000"><button class="mic" data-for="fAmt" data-num="1">🎤</button></div>
-    <div class="row">
-      <div><label>Fees li (Rs)</label><input id="fFee" type="number" inputmode="numeric"></div>
-      <div><label>Bank charges (Rs)</label><input id="fBank" type="number" inputmode="numeric"></div>
+    <h2><i>💸</i>Nayi Payment</h2>
+    <div class="field"><div class="lbl"><label>Customer ka naam (zaroori nahi)</label><input id="fName" placeholder="Jaise: Ali"></div><button class="mic" data-for="fName">🎤</button></div>
+    <div class="field"><div class="lbl"><label>Receiver ka EasyPaisa number</label><input id="fNum" type="tel" inputmode="numeric" placeholder="03xx xxxxxxx" maxlength="13"></div><button class="mic" data-for="fNum" data-num="1">🎤</button></div>
+    <div class="field"><div class="lbl"><label>Kitne paise bheje (Rs)</label><input id="fAmt" type="number" inputmode="numeric" placeholder="Jaise: 5000"></div><button class="mic" data-for="fAmt" data-num="1">🎤</button></div>
+    <div class="two">
+      <div class="field"><div class="lbl"><label>Fees li (Rs)</label><input id="fFee" type="number" inputmode="numeric" placeholder="0"></div></div>
+      <div class="field"><div class="lbl"><label>Bank charges (Rs)</label><input id="fBank" type="number" inputmode="numeric" placeholder="0"></div></div>
     </div>
-    <div class="calc" id="calcBox">Amount likhein, fees khud ban jayegi.</div>
-    <button class="main" id="saveBtn">✅ Save Karein</button>
-    <button class="sec" id="cancelEdit" style="display:none;width:100%;margin-top:8px">Edit chhorein</button>
+    <div class="calc" id="calcBox"></div>
+    <button class="btn" id="saveBtn">Save Karein</button>
+    <button class="ghost" id="cancelEdit" style="display:none">Edit chhorein</button>
   </div>
   <div class="card">
-    <h2>📋 Aaj ki Payments</h2>
+    <h2><i>🧾</i>Aaj ki Payments</h2>
     <div id="todayList"></div>
   </div>
 </section>
@@ -89,23 +159,21 @@ summary{font-weight:600;cursor:pointer;display:flex;justify-content:space-betwee
 <!-- AAJ KA HISAAB -->
 <section class="page" id="p-today">
   <div class="card">
-    <h2>📊 Aaj Ka Hisaab</h2>
-    <div class="stats" id="todayStats"></div>
+    <h2><i>📊</i>Aaj Ka Hisaab</h2>
+    <div class="tiles" id="todayStats"></div>
   </div>
   <div class="card">
-    <h2>🏦 Meezan Bank Balance</h2>
-    <label>Aaj subah ka balance (Rs)</label>
-    <div class="row"><input id="openBal" type="number" inputmode="numeric" placeholder="Jaise: 200000"><button class="sec" id="saveBal" style="flex:0 0 90px">Save</button></div>
-    <label>Din mein bank mein paise daale (Rs)</label>
-    <div class="row"><input id="addBal" type="number" inputmode="numeric" placeholder="Jaise: 50000"><button class="sec" id="saveAdd" style="flex:0 0 90px">Jama</button></div>
-    <div class="calc" id="balBox"></div>
+    <h2><i>🏦</i>Meezan Bank Balance</h2>
+    <div class="field"><div class="lbl"><label>Aaj subah ka balance (Rs)</label><input id="openBal" type="number" inputmode="numeric" placeholder="Jaise: 200000"></div><button class="mini" id="saveBal">Save</button></div>
+    <div class="field"><div class="lbl"><label>Din mein bank mein paise daale (Rs)</label><input id="addBal" type="number" inputmode="numeric" placeholder="Jaise: 50000"></div><button class="mini" id="saveAdd">Jama</button></div>
+    <div class="balbox" id="balBox"></div>
   </div>
 </section>
 
 <!-- PURANA RECORD -->
 <section class="page" id="p-old">
   <div class="card">
-    <h2>📅 Purana Record</h2>
+    <h2><i>📅</i>Purana Record</h2>
     <div id="oldList"></div>
   </div>
 </section>
@@ -113,23 +181,19 @@ summary{font-weight:600;cursor:pointer;display:flex;justify-content:space-betwee
 <!-- SETTINGS -->
 <section class="page" id="p-set">
   <div class="card">
-    <h2>⚙️ Settings</h2>
-    <label>Dukaan ka naam</label>
-    <input id="sName" placeholder="Jaise: Ali EasyPaisa Point">
-    <label>Har 1000 rupay par fees (Rs)</label>
-    <input id="sRate" type="number" inputmode="numeric">
-    <label>Kam se kam fees (Rs)</label>
-    <input id="sMin" type="number" inputmode="numeric">
-    <label>Meezan Bank charges har transfer par (Rs)</label>
-    <input id="sBank" type="number" inputmode="numeric">
-    <button class="main" id="saveSet">Settings Save Karein</button>
+    <h2><i>⚙️</i>Settings</h2>
+    <div class="field"><div class="lbl"><label>Dukaan ka naam</label><input id="sName" placeholder="Jaise: Ali EasyPaisa Point"></div></div>
+    <div class="field"><div class="lbl"><label>Har 1000 rupay par fees (Rs)</label><input id="sRate" type="number" inputmode="numeric"></div></div>
+    <div class="field"><div class="lbl"><label>Kam se kam fees (Rs)</label><input id="sMin" type="number" inputmode="numeric"></div></div>
+    <div class="field"><div class="lbl"><label>Meezan Bank charges har transfer par (Rs)</label><input id="sBank" type="number" inputmode="numeric"></div></div>
+    <button class="btn" id="saveSet">Settings Save Karein</button>
   </div>
   <div class="card">
-    <h2>💾 Backup</h2>
+    <h2><i>💾</i>Backup</h2>
     <p class="note">Data sirf is phone mein hai. Hafte mein ek baar backup file bana kar WhatsApp par khud ko bhej dein.</p>
-    <div class="row" style="margin-top:10px">
-      <button class="sec" id="expBtn">⬇️ Backup banayein</button>
-      <button class="sec" id="impBtn">⬆️ Backup wapas layein</button>
+    <div class="row2" style="margin-top:12px">
+      <button class="out" id="expBtn">⬇️ Backup banayein</button>
+      <button class="out" id="impBtn">⬆️ Wapas layein</button>
     </div>
     <input type="file" id="impFile" accept=".json" style="display:none">
   </div>
@@ -137,9 +201,9 @@ summary{font-weight:600;cursor:pointer;display:flex;justify-content:space-betwee
 </main>
 
 <nav>
-  <button class="act" data-p="p-new"><i>➕</i>Nayi Entry</button>
-  <button data-p="p-today"><i>📊</i>Aaj Ka Hisaab</button>
-  <button data-p="p-old"><i>📅</i>Purana Record</button>
+  <button class="act" data-p="p-new"><i>💸</i>Nayi Entry</button>
+  <button data-p="p-today"><i>📊</i>Hisaab</button>
+  <button data-p="p-old"><i>📅</i>Record</button>
   <button data-p="p-set"><i>⚙️</i>Settings</button>
 </nav>
 <div class="toast" id="toast"></div>
@@ -148,101 +212,94 @@ summary{font-weight:600;cursor:pointer;display:flex;justify-content:space-betwee
 const KEY='ep_data_v1';
 const $=id=>document.getElementById(id);
 const rs=n=>'Rs '+Math.round(n||0).toLocaleString('en-PK');
+const short=n=>{n=Math.round(n||0);return n>=100000?(n/100000).toFixed(n%100000?1:0)+' lac':n>=1000?(n/1000).toFixed(n%1000?1:0)+'k':String(n)};
 const num=v=>{const n=parseFloat(v);return isNaN(n)?0:n};
 const dayKey=d=>{d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const niceDay=k=>{const [y,m,d]=k.split('-');return +d+' '+MONTHS[m-1]+' '+y};
 const time=ts=>new Date(ts).toLocaleTimeString('en-PK',{hour:'numeric',minute:'2-digit'});
+const esc=s=>(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 let db={settings:{name:'',rate:20,min:20,bank:0},tx:[],bal:{}};
 try{const s=localStorage.getItem(KEY);if(s)db=Object.assign(db,JSON.parse(s));}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(db));}catch(e){toast('Save nahi hua!')}}
 function toast(t){const el=$('toast');el.textContent=t;el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',2200)}
 
-let editId=null, feeTouched=false, bankTouched=false;
-
+let editId=null,feeTouched=false,bankTouched=false;
 function calcFee(a){const s=db.settings;if(a<=0)return 0;return Math.max(num(s.min),Math.ceil(a/1000)*num(s.rate))}
 function updateCalc(){
   const a=num($('fAmt').value);
   if(!feeTouched)$('fFee').value=a>0?calcFee(a):'';
   if(!bankTouched)$('fBank').value=a>0?num(db.settings.bank):'';
   const fee=num($('fFee').value),bank=num($('fBank').value);
-  $('calcBox').innerHTML=a>0?`Customer se lein: <b>${rs(a+fee)}</b><br>Bank se jayega: ${rs(a+bank)}<br>Aapka profit: <b>${rs(fee-bank)}</b>`:'Amount likhein, fees khud ban jayegi.';
+  $('calcBox').innerHTML=a>0?`<div class="r"><span>Customer se lein</span><b>${rs(a+fee)}</b></div><div class="r"><span>Bank se jayega</span><span>${rs(a+bank)}</span></div><div class="r t"><span>Aapka Profit</span><span>${rs(fee-bank)}</span></div>`:'Amount likhein, fees aur profit khud ban jayenge.';
 }
 $('fAmt').addEventListener('input',updateCalc);
 $('fFee').addEventListener('input',()=>{feeTouched=true;updateCalc()});
 $('fBank').addEventListener('input',()=>{bankTouched=true;updateCalc()});
 
-function resetForm(){['fName','fNum','fAmt','fFee','fBank'].forEach(i=>$(i).value='');feeTouched=bankTouched=false;editId=null;$('saveBtn').textContent='✅ Save Karein';$('cancelEdit').style.display='none';updateCalc()}
+function resetForm(){['fName','fNum','fAmt','fFee','fBank'].forEach(i=>$(i).value='');feeTouched=bankTouched=false;editId=null;$('saveBtn').textContent='Save Karein';$('cancelEdit').style.display='none';updateCalc()}
 $('cancelEdit').onclick=resetForm;
 
 $('saveBtn').onclick=()=>{
-  const a=num($('fAmt').value);
-  const nr=$('fNum').value.replace(/\D/g,'');
+  const a=num($('fAmt').value),nr=$('fNum').value.replace(/\D/g,'');
   if(a<=0)return toast('Amount likhein');
   if(nr.length<10)return toast('Sahi EasyPaisa number likhein');
   const fee=num($('fFee').value),bank=num($('fBank').value);
-  if(editId){
-    const t=db.tx.find(x=>x.id===editId);
-    Object.assign(t,{name:$('fName').value.trim(),number:nr,amount:a,fee,bank});
-    toast('Entry badal di');
-  }else{
-    db.tx.push({id:Date.now()+''+Math.floor(Math.random()*1000),ts:Date.now(),day:dayKey(),name:$('fName').value.trim(),number:nr,amount:a,fee,bank});
-    toast('Save ho gaya ✅');
-  }
+  if(editId){Object.assign(db.tx.find(x=>x.id===editId),{name:$('fName').value.trim(),number:nr,amount:a,fee,bank});toast('Entry badal di ✅')}
+  else{db.tx.push({id:Date.now()+''+Math.floor(Math.random()*1000),ts:Date.now(),day:dayKey(),name:$('fName').value.trim(),number:nr,amount:a,fee,bank});toast('Save ho gaya ✅')}
   save();resetForm();renderAll();
 };
 
-function txHtml(t,withActs){
-  return `<div class="tx"><div class="top"><span>${esc(t.name)||'Customer'} → ${t.number}</span><span>${rs(t.amount)}</span></div>
-  <div class="sub">${time(t.ts)} · Fees ${rs(t.fee)} · Bank ${rs(t.bank)} · <b class="green">Profit ${rs(t.fee-t.bank)}</b></div>
-  ${withActs?`<div class="acts"><button class="sec" onclick="wa('${t.id}')">📲 WhatsApp</button><button class="sec" onclick="editTx('${t.id}')">✏️ Edit</button><button class="sec del" onclick="delTx('${t.id}')">🗑️ Delete</button></div>`:''}</div>`;
+function txHtml(t){
+  const nm=esc(t.name)||'Customer';
+  return `<div class="tx"><div class="av">${nm[0].toUpperCase()}</div>
+  <div class="mid"><div class="nm">${nm}</div><div class="no">${t.number} · ${time(t.ts)}</div>
+  <div class="acts"><button class="wa" onclick="wa('${t.id}')">📲 WhatsApp</button><button onclick="editTx('${t.id}')">✏️</button><button class="dl" onclick="delTx('${t.id}')">🗑️</button></div></div>
+  <div class="rt"><div class="amt">${rs(t.amount)}</div><div class="chip">+${rs(t.fee-t.bank)}</div></div></div>`;
 }
-function esc(s){return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+const emptyHtml=(ic,t)=>`<div class="empty"><i>${ic}</i>${t}</div>`;
 
 window.editTx=id=>{const t=db.tx.find(x=>x.id===id);if(!t)return;go('p-new');editId=id;feeTouched=bankTouched=true;
   $('fName').value=t.name;$('fNum').value=t.number;$('fAmt').value=t.amount;$('fFee').value=t.fee;$('fBank').value=t.bank;
-  $('saveBtn').textContent='💾 Badlav Save Karein';$('cancelEdit').style.display='block';updateCalc();scrollTo(0,0)};
+  $('saveBtn').textContent='Badlav Save Karein';$('cancelEdit').style.display='block';updateCalc();scrollTo({top:0,behavior:'smooth'})};
 window.delTx=id=>{if(!confirm('Yeh entry delete karni hai?'))return;db.tx=db.tx.filter(x=>x.id!==id);save();renderAll();toast('Delete ho gayi')};
 window.wa=id=>{const t=db.tx.find(x=>x.id===id);if(!t)return;
-  const shop=db.settings.name||'Easy Paisa';
-  const msg=`*${shop}*\nPayment Slip\nTareekh: ${niceDay(t.day)} ${time(t.ts)}\nReceiver: ${t.number}\nAmount: ${rs(t.amount)}\nFees: ${rs(t.fee)}\nTotal: ${rs(t.amount+t.fee)}\nShukriya!`;
+  const msg=`*${db.settings.name||'Easy Paisa'}*\nPayment Slip\nTareekh: ${niceDay(t.day)} ${time(t.ts)}\nReceiver: ${t.number}\nAmount: ${rs(t.amount)}\nFees: ${rs(t.fee)}\nTotal: ${rs(t.amount+t.fee)}\nShukriya!`;
   open('https://wa.me/?text='+encodeURIComponent(msg),'_blank')};
 
 function sums(list){return list.reduce((s,t)=>{s.amt+=t.amount;s.fee+=t.fee;s.bank+=t.bank;s.n++;return s},{amt:0,fee:0,bank:0,n:0})}
 
 function renderToday(){
-  const k=dayKey(),list=db.tx.filter(t=>t.day===k).sort((a,b)=>b.ts-a.ts);
-  $('todayList').innerHTML=list.length?list.map(t=>txHtml(t,true)).join(''):'<div class="empty">Aaj abhi koi payment nahi.</div>';
-  const s=sums(list);
+  const k=dayKey(),list=db.tx.filter(t=>t.day===k).sort((a,b)=>b.ts-a.ts),s=sums(list);
+  $('todayList').innerHTML=list.length?list.map(txHtml).join(''):emptyHtml('🧾','Aaj abhi koi payment nahi.');
+  $('heroProfit').textContent=rs(s.fee-s.bank);$('qN').textContent=s.n;$('qAmt').textContent=short(s.amt);
   $('todayStats').innerHTML=`
-   <div class="stat big"><span>Aaj ka Profit</span><b>${rs(s.fee-s.bank)}</b></div>
-   <div class="stat"><span>Kitni payments</span><b>${s.n}</b></div>
-   <div class="stat"><span>Total bheja</span><b>${rs(s.amt)}</b></div>
-   <div class="stat"><span>Total fees li</span><b>${rs(s.fee)}</b></div>
-   <div class="stat"><span>Bank charges</span><b>${rs(s.bank)}</b></div>
-   <div class="stat" style="grid-column:1/3"><span>Customers se cash mila (amount + fees)</span><b>${rs(s.amt+s.fee)}</b></div>`;
-  const b=db.bal[k]||{open:null,add:0};
-  $('openBal').value=b.open??'';
-  if(b.open==null){$('balBox').innerHTML='Subah ka balance likh kar Save dabayein.';}
-  else{const left=num(b.open)+num(b.add)-s.amt-s.bank;
-    $('balBox').innerHTML=`Subah: ${rs(b.open)}<br>Jama kiye: ${rs(b.add)}<br>Bheje + charges: ${rs(s.amt+s.bank)}<br>Ab bank mein hone chahiye: <b style="color:${left<0?'#c62828':'#22a447'}">${rs(left)}</b>`}
+   <div class="tile c1"><div class="ic">💰</div><span>Profit</span><b>${rs(s.fee-s.bank)}</b></div>
+   <div class="tile c2"><div class="ic">🔢</div><span>Payments</span><b>${s.n}</b></div>
+   <div class="tile c3"><div class="ic">📤</div><span>Total Bheja</span><b>${rs(s.amt)}</b></div>
+   <div class="tile c4"><div class="ic">🏷️</div><span>Fees Li</span><b>${rs(s.fee)}</b></div>
+   <div class="tile"><div class="ic">🏦</div><span>Bank Charges</span><b>${rs(s.bank)}</b></div>
+   <div class="tile c1"><div class="ic">💵</div><span>Cash Mila</span><b>${rs(s.amt+s.fee)}</b></div>`;
+  const b=db.bal[k]||{open:null,add:0};$('openBal').value=b.open??'';
+  if(b.open==null){$('balBox').innerHTML='<p class="note">Subah ka balance likh kar Save dabayein, phir baqi balance khud nikalta rahega.</p>';$('qBal').textContent='—'}
+  else{const left=num(b.open)+num(b.add)-s.amt-s.bank;$('qBal').textContent=short(left);
+    $('balBox').innerHTML=`<div class="r"><span>Subah ka balance</span><span>${rs(b.open)}</span></div><div class="r"><span>Jama kiye</span><span>+ ${rs(b.add)}</span></div><div class="r"><span>Bheje + charges</span><span>− ${rs(s.amt+s.bank)}</span></div>
+    <div class="left ${left<0?'neg':''}"><span>Ab bank mein</span><b>${rs(left)}</b></div>`}
 }
-$('saveBal').onclick=()=>{const k=dayKey();db.bal[k]=db.bal[k]||{add:0};db.bal[k].open=num($('openBal').value);save();renderToday();toast('Balance save')};
-$('saveAdd').onclick=()=>{const k=dayKey(),v=num($('addBal').value);if(v<=0)return toast('Raqam likhein');db.bal[k]=db.bal[k]||{open:null,add:0};db.bal[k].add=num(db.bal[k].add)+v;$('addBal').value='';save();renderToday();toast('Jama ho gaya')};
+$('saveBal').onclick=()=>{const k=dayKey();db.bal[k]=db.bal[k]||{add:0};db.bal[k].open=num($('openBal').value);save();renderToday();toast('Balance save ✅')};
+$('saveAdd').onclick=()=>{const k=dayKey(),v=num($('addBal').value);if(v<=0)return toast('Raqam likhein');db.bal[k]=db.bal[k]||{open:null,add:0};db.bal[k].add=num(db.bal[k].add)+v;$('addBal').value='';save();renderToday();toast('Jama ho gaya ✅')};
 
 function renderOld(){
   const months={};
   db.tx.forEach(t=>{const m=t.day.slice(0,7);(months[m]=months[m]||{})[t.day]=(months[m][t.day]||[]).concat(t)});
   const mk=Object.keys(months).sort().reverse();
-  if(!mk.length){$('oldList').innerHTML='<div class="empty">Abhi koi record nahi.</div>';return}
+  if(!mk.length){$('oldList').innerHTML=emptyHtml('📅','Abhi koi record nahi.');return}
   $('oldList').innerHTML=mk.map(m=>{
-    const days=months[m],all=Object.values(days).flat(),s=sums(all),[y,mm]=m.split('-');
-    return `<details><summary><span>${MONTHS[mm-1]} ${y}</span><span class="green">${rs(s.fee-s.bank)}</span></summary>
-     <div class="note">${s.n} payments · Bheja ${rs(s.amt)} · Fees ${rs(s.fee)}</div>
+    const days=months[m],s=sums(Object.values(days).flat()),[y,mm]=m.split('-');
+    return `<details><summary><span>${MONTHS[mm-1]} ${y}<span class="sm">${s.n} payments · Bheja ${rs(s.amt)}</span></span><span class="p">${rs(s.fee-s.bank)}</span></summary>
      ${Object.keys(days).sort().reverse().map(d=>{const ds=sums(days[d]);
-       return `<details style="margin-left:10px"><summary><span>${niceDay(d)} (${ds.n})</span><span class="green">${rs(ds.fee-ds.bank)}</span></summary>
-       ${days[d].sort((a,b)=>b.ts-a.ts).map(t=>txHtml(t,true)).join('')}</details>`}).join('')}
+       return `<details><summary><span>${niceDay(d)}<span class="sm">${ds.n} payments</span></span><span class="p">${rs(ds.fee-ds.bank)}</span></summary>${days[d].sort((a,b)=>b.ts-a.ts).map(txHtml).join('')}</details>`}).join('')}
     </details>`}).join('');
 }
 
@@ -251,32 +308,29 @@ $('saveSet').onclick=()=>{db.settings={name:$('sName').value.trim(),rate:num($('
 
 $('expBtn').onclick=()=>{const blob=new Blob([JSON.stringify(db)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='easypaisa-backup-'+dayKey()+'.json';a.click()};
 $('impBtn').onclick=()=>$('impFile').click();
-$('impFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.tx)throw 0;if(!confirm('Purana data is backup se badal jayega. Theek hai?'))return;db=Object.assign({settings:{name:'',rate:20,min:20,bank:0},tx:[],bal:{}},d);save();renderAll();toast('Backup wapas aa gaya')}catch(x){toast('Ghalat file')}};r.readAsText(f)};
+$('impFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.tx)throw 0;if(!confirm('Purana data is backup se badal jayega. Theek hai?'))return;db=Object.assign({settings:{name:'',rate:20,min:20,bank:0},tx:[],bal:{}},d);save();renderAll();toast('Backup wapas aa gaya ✅')}catch(x){toast('Ghalat file')}};r.readAsText(f)};
 
 function go(p){document.querySelectorAll('.page').forEach(s=>s.classList.toggle('show',s.id===p));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('act',b.dataset.p===p));if(p==='p-old')renderOld();if(p==='p-today')renderToday()}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.p));
 
 // Voice
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-const urduNums={'ek':1,'do':2,'teen':3,'char':4,'chaar':4,'panch':5,'paanch':5,'che':6,'chhe':6,'saat':7,'aath':8,'nau':9,'das':10,'hazar':1000,'hazaar':1000,'sau':100,'lakh':100000};
 document.querySelectorAll('.mic').forEach(btn=>btn.onclick=()=>{
   if(!SR)return toast('Is phone mein voice nahi chalti');
   const r=new SR();r.lang=btn.dataset.num?'en-IN':'ur-PK';r.interimResults=false;
   btn.classList.add('on');r.start();
-  r.onresult=e=>{let t=e.results[0][0].transcript;const inp=$(btn.dataset.for);
-    if(btn.dataset.num){
-      let v=t.toLowerCase().replace(/,/g,'');
-      if(btn.dataset.for==='fAmt'){
-        let m=v.match(/(\d+(?:\.\d+)?)\s*(thousand|hazar|hazaar|k\b|lakh|lac)?/);
-        if(m){let n=parseFloat(m[1]);if(m[2])n*=/lakh|lac/.test(m[2])?100000:1000;inp.value=Math.round(n)}
-      }else inp.value=v.replace(/\D/g,'');
-    }else inp.value=t;
+  r.onresult=e=>{const t=e.results[0][0].transcript,inp=$(btn.dataset.for);
+    if(btn.dataset.num){const v=t.toLowerCase().replace(/,/g,'');
+      if(btn.dataset.for==='fAmt'){const m=v.match(/(\d+(?:\.\d+)?)\s*(thousand|hazar|hazaar|k\b|lakh|lac)?/);
+        if(m){let n=parseFloat(m[1]);if(m[2])n*=/lakh|lac/.test(m[2])?100000:1000;inp.value=Math.round(n)}}
+      else inp.value=v.replace(/\D/g,'')}
+    else inp.value=t;
     inp.dispatchEvent(new Event('input'))};
   r.onend=()=>btn.classList.remove('on');r.onerror=()=>{btn.classList.remove('on');toast('Awaaz samajh nahi aayi')};
 });
 
 function renderAll(){renderSettings();renderToday();if($('p-old').classList.contains('show'))renderOld()}
-$('todayLbl').textContent='Aaj: '+niceDay(dayKey());
+$('todayLbl').textContent=niceDay(dayKey());
 renderAll();updateCalc();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
