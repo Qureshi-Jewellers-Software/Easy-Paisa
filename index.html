@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="theme-color" content="#0f7a4a">
+<meta name="theme-color" content="#22a447">
 <title>Easy Paisa Hisaab</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
@@ -11,29 +11,29 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f1f5f3;color:#1c2b24;padding-bottom:76px}
-header{background:#0f7a4a;color:#fff;padding:14px 16px;position:sticky;top:0;z-index:5}
+header{background:linear-gradient(135deg,#3bb54a,#1f9a40);color:#fff;padding:14px 16px;position:sticky;top:0;z-index:5}
 header h1{font-size:19px}
 header small{opacity:.85;font-size:13px}
 main{padding:12px;max-width:560px;margin:auto}
 .card{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.card h2{font-size:16px;margin-bottom:10px;color:#0f7a4a}
+.card h2{font-size:16px;margin-bottom:10px;color:#22a447}
 label{display:block;font-size:13px;color:#4a5a52;margin:8px 0 4px}
 .row{display:flex;gap:8px;align-items:center}
 .row>*{flex:1}
 input,select{width:100%;padding:12px;border:1px solid #cfd8d3;border-radius:10px;font-size:16px;background:#fff}
-input:focus{outline:2px solid #0f7a4a;border-color:transparent}
-.mic{flex:0 0 48px;height:48px;border-radius:10px;border:0;background:#e3f2ea;font-size:20px}
+input:focus{outline:2px solid #22a447;border-color:transparent}
+.mic{flex:0 0 48px;height:48px;border-radius:10px;border:0;background:#e6f6e8;font-size:20px}
 .mic.on{background:#e53935;color:#fff}
-button.main{width:100%;padding:14px;border:0;border-radius:12px;background:#0f7a4a;color:#fff;font-size:17px;font-weight:600;margin-top:12px}
-button.sec{padding:10px 12px;border:1px solid #0f7a4a;border-radius:10px;background:#fff;color:#0f7a4a;font-size:14px}
+button.main{width:100%;padding:14px;border:0;border-radius:12px;background:#22a447;color:#fff;font-size:17px;font-weight:600;margin-top:12px}
+button.sec{padding:10px 12px;border:1px solid #22a447;border-radius:10px;background:#fff;color:#22a447;font-size:14px}
 button.del{border-color:#c62828;color:#c62828}
-.calc{background:#f4faf6;border-radius:10px;padding:10px;margin-top:10px;font-size:15px}
-.calc b{color:#0f7a4a}
+.calc{background:#eef9ef;border-radius:10px;padding:10px;margin-top:10px;font-size:15px}
+.calc b{color:#22a447}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.stat{background:#f4faf6;border-radius:10px;padding:10px}
+.stat{background:#eef9ef;border-radius:10px;padding:10px}
 .stat span{display:block;font-size:12px;color:#4a5a52}
 .stat b{font-size:18px}
-.stat.big{grid-column:1/3;background:#0f7a4a;color:#fff}
+.stat.big{grid-column:1/3;background:#22a447;color:#fff}
 .stat.big span{color:#d7efe2}
 .stat.warn b{color:#c62828}
 .tx{border-bottom:1px solid #eef2f0;padding:10px 0}
@@ -42,11 +42,11 @@ button.del{border-color:#c62828;color:#c62828}
 .tx .sub{font-size:13px;color:#5d6d65;margin-top:3px}
 .tx .acts{display:flex;gap:6px;margin-top:8px}
 .tx .acts button{flex:1;padding:8px;font-size:13px}
-.green{color:#0f7a4a}
+.green{color:#22a447}
 nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;border-top:1px solid #dde5e0;z-index:5}
 nav button{flex:1;border:0;background:none;padding:10px 4px 12px;font-size:12px;color:#5d6d65}
 nav button i{display:block;font-style:normal;font-size:20px}
-nav button.act{color:#0f7a4a;font-weight:700}
+nav button.act{color:#22a447;font-weight:700}
 .page{display:none}.page.show{display:block}
 details{border-bottom:1px solid #eef2f0;padding:8px 0}
 summary{font-weight:600;cursor:pointer;display:flex;justify-content:space-between}
@@ -226,7 +226,7 @@ function renderToday(){
   $('openBal').value=b.open??'';
   if(b.open==null){$('balBox').innerHTML='Subah ka balance likh kar Save dabayein.';}
   else{const left=num(b.open)+num(b.add)-s.amt-s.bank;
-    $('balBox').innerHTML=`Subah: ${rs(b.open)}<br>Jama kiye: ${rs(b.add)}<br>Bheje + charges: ${rs(s.amt+s.bank)}<br>Ab bank mein hone chahiye: <b style="color:${left<0?'#c62828':'#0f7a4a'}">${rs(left)}</b>`}
+    $('balBox').innerHTML=`Subah: ${rs(b.open)}<br>Jama kiye: ${rs(b.add)}<br>Bheje + charges: ${rs(s.amt+s.bank)}<br>Ab bank mein hone chahiye: <b style="color:${left<0?'#c62828':'#22a447'}">${rs(left)}</b>`}
 }
 $('saveBal').onclick=()=>{const k=dayKey();db.bal[k]=db.bal[k]||{add:0};db.bal[k].open=num($('openBal').value);save();renderToday();toast('Balance save')};
 $('saveAdd').onclick=()=>{const k=dayKey(),v=num($('addBal').value);if(v<=0)return toast('Raqam likhein');db.bal[k]=db.bal[k]||{open:null,add:0};db.bal[k].add=num(db.bal[k].add)+v;$('addBal').value='';save();renderToday();toast('Jama ho gaya')};
