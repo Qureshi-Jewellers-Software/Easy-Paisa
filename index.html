@@ -117,6 +117,14 @@ nav button.act i{background:var(--gl)}
 .row2{display:flex;gap:8px}.row2 button{flex:1}
 .out{border:1.5px solid var(--g);background:#fff;color:var(--g2);border-radius:14px;padding:12px;font-size:13px;font-weight:600}
 input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}input[type=number]{-moz-appearance:textfield}
+.dash{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dt{border:0;border-radius:22px;padding:16px 14px;text-align:left;min-height:122px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 2px 10px rgba(20,60,35,.06);transition:.15s}
+.dt:active{transform:scale(.96)}
+.dt .ic{width:46px;height:46px;border-radius:15px;background:#fff;display:grid;place-items:center;font-size:24px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.dt b{display:block;font-size:15px;font-weight:600;color:var(--ink);margin-top:10px}
+.dt span{font-size:12px;color:var(--mut)}
+.dt.d1{background:#e9f8ec}.dt.d2{background:#e8f2fd}.dt.d3{background:#fff4e5}.dt.d4{background:#f3ecfd}.dt.d5{background:#fdeef3}.dt.d6{background:#e6f7f8}
+.back{border:0;background:#fff;border-radius:12px;padding:8px 14px;font-size:13px;font-weight:600;color:var(--g2);margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
 </style>
 </head>
 <body>
@@ -135,8 +143,21 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     <div><span>Bank Baqi</span><b id="qBal">—</b></div>
   </div>
 
+<!-- HOME -->
+<section class="page show" id="p-home">
+  <div class="dash">
+    <button class="dt d1" data-go="p-new"><div class="ic">💸</div><div><b>Nayi Payment</b><span>Entry karein</span></div></button>
+    <button class="dt d2" data-go="p-today"><div class="ic">📊</div><div><b>Aaj Ka Hisaab</b><span id="tProfit">Profit Rs 0</span></div></button>
+    <button class="dt d3" data-go="p-bank"><div class="ic">🏦</div><div><b>Bank Balance</b><span id="tBal">Meezan Bank</span></div></button>
+    <button class="dt d4" data-go="p-old"><div class="ic">📅</div><div><b>Purana Record</b><span>Din / Mahina</span></div></button>
+    <button class="dt d5" data-go="p-set"><div class="ic">⚙️</div><div><b>Settings</b><span>Fees, naam</span></div></button>
+    <button class="dt d6" data-go="p-backup"><div class="ic">💾</div><div><b>Backup</b><span>Data mehfooz</span></div></button>
+  </div>
+</section>
+
 <!-- NAYI ENTRY -->
-<section class="page show" id="p-new">
+<section class="page" id="p-new">
+  <button class="back" data-go="p-home">← Wapas</button>
   <div class="card">
     <h2><i>💸</i>Nayi Payment</h2>
     <div class="field"><div class="lbl"><label>Customer ka naam (zaroori nahi)</label><input id="fName" placeholder="Jaise: Ali"></div><button class="mic" data-for="fName">🎤</button></div>
@@ -158,10 +179,16 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 
 <!-- AAJ KA HISAAB -->
 <section class="page" id="p-today">
+  <button class="back" data-go="p-home">← Wapas</button>
   <div class="card">
     <h2><i>📊</i>Aaj Ka Hisaab</h2>
     <div class="tiles" id="todayStats"></div>
   </div>
+</section>
+
+<!-- BANK -->
+<section class="page" id="p-bank">
+  <button class="back" data-go="p-home">← Wapas</button>
   <div class="card">
     <h2><i>🏦</i>Meezan Bank Balance</h2>
     <div class="field"><div class="lbl"><label>Aaj subah ka balance (Rs)</label><input id="openBal" type="number" inputmode="numeric" placeholder="Jaise: 200000"></div><button class="mini" id="saveBal">Save</button></div>
@@ -172,6 +199,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 
 <!-- PURANA RECORD -->
 <section class="page" id="p-old">
+  <button class="back" data-go="p-home">← Wapas</button>
   <div class="card">
     <h2><i>📅</i>Purana Record</h2>
     <div id="oldList"></div>
@@ -180,6 +208,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 
 <!-- SETTINGS -->
 <section class="page" id="p-set">
+  <button class="back" data-go="p-home">← Wapas</button>
   <div class="card">
     <h2><i>⚙️</i>Settings</h2>
     <div class="field"><div class="lbl"><label>Dukaan ka naam</label><input id="sName" placeholder="Jaise: Ali EasyPaisa Point"></div></div>
@@ -188,6 +217,10 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
     <div class="field"><div class="lbl"><label>Meezan Bank charges har transfer par (Rs)</label><input id="sBank" type="number" inputmode="numeric"></div></div>
     <button class="btn" id="saveSet">Settings Save Karein</button>
   </div>
+</section>
+<!-- BACKUP -->
+<section class="page" id="p-backup">
+  <button class="back" data-go="p-home">← Wapas</button>
   <div class="card">
     <h2><i>💾</i>Backup</h2>
     <p class="note">Data sirf is phone mein hai. Hafte mein ek baar backup file bana kar WhatsApp par khud ko bhej dein.</p>
@@ -201,10 +234,10 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 </main>
 
 <nav>
-  <button class="act" data-p="p-new"><i>💸</i>Nayi Entry</button>
+  <button class="act" data-p="p-home"><i>🏠</i>Home</button>
+  <button data-p="p-new"><i>💸</i>Nayi Entry</button>
   <button data-p="p-today"><i>📊</i>Hisaab</button>
   <button data-p="p-old"><i>📅</i>Record</button>
-  <button data-p="p-set"><i>⚙️</i>Settings</button>
 </nav>
 <div class="toast" id="toast"></div>
 
@@ -273,7 +306,7 @@ function sums(list){return list.reduce((s,t)=>{s.amt+=t.amount;s.fee+=t.fee;s.ba
 function renderToday(){
   const k=dayKey(),list=db.tx.filter(t=>t.day===k).sort((a,b)=>b.ts-a.ts),s=sums(list);
   $('todayList').innerHTML=list.length?list.map(txHtml).join(''):emptyHtml('🧾','Aaj abhi koi payment nahi.');
-  $('heroProfit').textContent=rs(s.fee-s.bank);$('qN').textContent=s.n;$('qAmt').textContent=short(s.amt);
+  $('heroProfit').textContent=rs(s.fee-s.bank);$('tProfit').textContent='Profit '+rs(s.fee-s.bank);$('qN').textContent=s.n;$('qAmt').textContent=short(s.amt);
   $('todayStats').innerHTML=`
    <div class="tile c1"><div class="ic">💰</div><span>Profit</span><b>${rs(s.fee-s.bank)}</b></div>
    <div class="tile c2"><div class="ic">🔢</div><span>Payments</span><b>${s.n}</b></div>
@@ -282,8 +315,8 @@ function renderToday(){
    <div class="tile"><div class="ic">🏦</div><span>Bank Charges</span><b>${rs(s.bank)}</b></div>
    <div class="tile c1"><div class="ic">💵</div><span>Cash Mila</span><b>${rs(s.amt+s.fee)}</b></div>`;
   const b=db.bal[k]||{open:null,add:0};$('openBal').value=b.open??'';
-  if(b.open==null){$('balBox').innerHTML='<p class="note">Subah ka balance likh kar Save dabayein, phir baqi balance khud nikalta rahega.</p>';$('qBal').textContent='—'}
-  else{const left=num(b.open)+num(b.add)-s.amt-s.bank;$('qBal').textContent=short(left);
+  if(b.open==null){$('balBox').innerHTML='<p class="note">Subah ka balance likh kar Save dabayein, phir baqi balance khud nikalta rahega.</p>';$('qBal').textContent='—';$('tBal').textContent='Meezan Bank'}
+  else{const left=num(b.open)+num(b.add)-s.amt-s.bank;$('qBal').textContent=short(left);$('tBal').textContent='Baqi '+rs(left);
     $('balBox').innerHTML=`<div class="r"><span>Subah ka balance</span><span>${rs(b.open)}</span></div><div class="r"><span>Jama kiye</span><span>+ ${rs(b.add)}</span></div><div class="r"><span>Bheje + charges</span><span>− ${rs(s.amt+s.bank)}</span></div>
     <div class="left ${left<0?'neg':''}"><span>Ab bank mein</span><b>${rs(left)}</b></div>`}
 }
@@ -310,7 +343,8 @@ $('expBtn').onclick=()=>{const blob=new Blob([JSON.stringify(db)],{type:'applica
 $('impBtn').onclick=()=>$('impFile').click();
 $('impFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.tx)throw 0;if(!confirm('Purana data is backup se badal jayega. Theek hai?'))return;db=Object.assign({settings:{name:'',rate:20,min:20,bank:0},tx:[],bal:{}},d);save();renderAll();toast('Backup wapas aa gaya ✅')}catch(x){toast('Ghalat file')}};r.readAsText(f)};
 
-function go(p){document.querySelectorAll('.page').forEach(s=>s.classList.toggle('show',s.id===p));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('act',b.dataset.p===p));if(p==='p-old')renderOld();if(p==='p-today')renderToday()}
+function go(p){document.querySelectorAll('.page').forEach(s=>s.classList.toggle('show',s.id===p));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('act',b.dataset.p===p));if(p==='p-old')renderOld();if(p==='p-today'||p==='p-bank'||p==='p-home')renderToday();scrollTo(0,0)}
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.p));
 
 // Voice
