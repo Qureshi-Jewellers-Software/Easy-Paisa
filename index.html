@@ -146,6 +146,20 @@ html[dir=rtl] .field{padding:8px 14px 8px 8px}
 .search{margin-bottom:12px}
 html[dir=rtl] .quick div{border-right:0;border-left:1px solid #eef1ef}html[dir=rtl] .quick div:last-child{border-left:0}
 .chip,.amt,.profit b,.quick b,.tile b{unicode-bidi:plaintext}
+.lock{position:fixed;inset:0;z-index:60;background:linear-gradient(160deg,#3cc35a,var(--g) 45%,var(--g2));color:#fff;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.lock.show{display:flex}
+.lock .logo{width:64px;height:64px;font-size:22px;border-radius:20px;margin-bottom:14px}
+.lock h3{font-size:18px;font-weight:600;margin-bottom:18px}
+.dots{display:flex;gap:16px;margin-bottom:30px}
+.dots i{width:16px;height:16px;border-radius:50%;border:2px solid #fff;transition:.15s}
+.dots i.f{background:#fff}
+.dots.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+.keys{display:grid;grid-template-columns:repeat(3,72px);gap:16px}
+.keys button{width:72px;height:72px;border-radius:50%;border:0;background:rgba(255,255,255,.18);color:#fff;font-size:26px;font-weight:600}
+.keys button:active{background:rgba(255,255,255,.35)}
+.keys button.nb{background:none}
+.lock .hint{font-size:12px;opacity:.8;margin-top:22px}
 </style>
 </head>
 <body>
@@ -239,6 +253,7 @@ html[dir=rtl] .quick div{border-right:0;border-left:1px solid #eef1ef}html[dir=r
     <div class="field"><div class="lbl"><label>Har 1000 rupay par fees (Rs)</label><input id="sRate" type="number" inputmode="numeric"></div></div>
     <div class="field"><div class="lbl"><label>Kam se kam fees (Rs)</label><input id="sMin" type="number" inputmode="numeric"></div></div>
     <div class="field"><div class="lbl"><label>Meezan Bank charges har transfer par (Rs)</label><input id="sBank" type="number" inputmode="numeric"></div></div>
+    <div class="field"><div class="lbl"><label>Naya PIN (4 number, khali chhorein to wahi rahega)</label><input id="sPin" type="tel" inputmode="numeric" maxlength="4" placeholder="••••"></div></div>
     <div class="field"><div class="lbl"><label>Zaban</label><select id="sLang"><option value="ur">اردو (Urdu)</option><option value="ru">Roman Urdu</option><option value="en">English</option></select></div></div>
     <button class="btn" id="saveSet">Settings Save Karein</button>
   </div>
@@ -264,6 +279,12 @@ html[dir=rtl] .quick div{border-right:0;border-left:1px solid #eef1ef}html[dir=r
   <button data-p="p-today"><i>📊</i>Hisaab</button>
   <button data-p="p-old"><i>📅</i>Record</button>
 </nav>
+<div class="lock" id="lock">
+  <div class="logo">Rs</div>
+  <h3>PIN likhein</h3>
+  <div class="dots" id="dots"><i></i><i></i><i></i><i></i></div>
+  <div class="keys" id="keys"></div>
+</div>
 <div class="toast" id="toast"></div>
 <div class="ovl" id="langPop"><div class="pop">
   <h3>🌐 Zaban chunein / Choose language</h3><p>زبان منتخب کریں</p>
@@ -307,9 +328,9 @@ const EN={
 'Save ho gaya ✅':'Saved ✅','Yeh entry delete karni hai?':'Delete this entry?','Delete ho gayi':'Deleted','Balance save ✅':'Balance saved ✅','Raqam likhein':'Enter amount',
 'Jama ho gaya ✅':'Added ✅','Settings save ✅':'Settings saved ✅','Purana data is backup se badal jayega. Theek hai?':'Current data will be replaced by this backup. OK?',
 'Backup wapas aa gaya ✅':'Backup restored ✅','Ghalat file':'Wrong file','Is phone mein voice nahi chalti':'Voice is not supported on this phone','Awaaz samajh nahi aayi':'Could not understand the voice',
-'Payment Slip':'Payment Slip','Transaction ID (zaroori nahi)':'Transaction ID (optional)','Jaise: 123456789012':'e.g. 123456789012','Dhoondein':'Search','TID, number ya naam':'TID, number or name','Kuch nahi mila.':'Nothing found.','Easy Paisa Hisaab':'Easy Paisa Hisaab','Tareekh':'Date','Receiver':'Receiver','Amount':'Amount','Fees':'Fee','Total':'Total','Shukriya!':'Thank you!'
+'Payment Slip':'Payment Slip','Transaction ID (zaroori nahi)':'Transaction ID (optional)','Jaise: 123456789012':'e.g. 123456789012','Dhoondein':'Search','TID, number ya naam':'TID, number or name','Kuch nahi mila.':'Nothing found.','Easy Paisa Hisaab':'Easy Paisa Hisaab','PIN likhein':'Enter PIN','Ghalat PIN':'Wrong PIN','Naya PIN (4 number, khali chhorein to wahi rahega)':'New PIN (4 digits, leave empty to keep)','PIN 4 number ka hona chahiye':'PIN must be 4 digits','Tareekh':'Date','Receiver':'Receiver','Amount':'Amount','Fees':'Fee','Total':'Total','Shukriya!':'Thank you!'
 };
-const UR={"Aaj ka Profit": "آج کا منافع", "Payments": "ادائیگیاں", "Total Bheja": "کل بھیجا", "Bank Baqi": "بینک باقی", "Nayi Payment": "نئی ادائیگی", "Entry karein": "اندراج کریں", "Aaj Ka Hisaab": "آج کا حساب", "Bank Balance": "بینک بیلنس", "Meezan Bank": "میزان بینک", "Purana Record": "پرانا ریکارڈ", "Din / Mahina": "دن / مہینہ", "Settings": "سیٹنگز", "Fees, naam": "فیس، نام", "Backup": "بیک اپ", "Data mehfooz": "ڈیٹا محفوظ", "← Wapas": "واپس →", "Customer ka naam (zaroori nahi)": "گاہک کا نام (ضروری نہیں)", "Receiver ka EasyPaisa number": "وصول کنندہ کا ایزی پیسہ نمبر", "Kitne paise bheje (Rs)": "کتنے پیسے بھیجے (روپے)", "Fees li (Rs)": "فیس لی (روپے)", "Bank charges (Rs)": "بینک چارجز (روپے)", "Save Karein": "محفوظ کریں", "Edit chhorein": "ترمیم چھوڑیں", "Aaj ki Payments": "آج کی ادائیگیاں", "Meezan Bank Balance": "میزان بینک بیلنس", "Aaj subah ka balance (Rs)": "آج صبح کا بیلنس (روپے)", "Save": "محفوظ", "Din mein bank mein paise daale (Rs)": "دن میں بینک میں پیسے ڈالے (روپے)", "Jama": "جمع", "Dukaan ka naam": "دکان کا نام", "Har 1000 rupay par fees (Rs)": "ہر 1000 روپے پر فیس (روپے)", "Kam se kam fees (Rs)": "کم از کم فیس (روپے)", "Meezan Bank charges har transfer par (Rs)": "ہر ٹرانسفر پر میزان بینک چارجز (روپے)", "Zaban": "زبان", "Settings Save Karein": "سیٹنگز محفوظ کریں", "Data sirf is phone mein hai. Hafte mein ek baar backup file bana kar WhatsApp par khud ko bhej dein.": "ڈیٹا صرف اس فون میں ہے۔ ہفتے میں ایک بار بیک اپ فائل بنا کر واٹس ایپ پر خود کو بھیج دیں۔", "⬇️ Backup banayein": "⬇️ بیک اپ بنائیں", "⬆️ Wapas layein": "⬆️ واپس لائیں", "Home": "ہوم", "Nayi Entry": "نیا اندراج", "Hisaab": "حساب", "Record": "ریکارڈ", "Jaise: Ali": "جیسے: علی", "Jaise: 5000": "جیسے: 5000", "Jaise: 200000": "جیسے: 200000", "Jaise: 50000": "جیسے: 50000", "Jaise: Ali EasyPaisa Point": "جیسے: علی ایزی پیسہ پوائنٹ", "Customer se lein": "گاہک سے لیں", "Bank se jayega": "بینک سے جائے گا", "Aapka Profit": "آپ کا منافع", "Amount likhein, fees aur profit khud ban jayenge.": "رقم لکھیں، فیس اور منافع خود بن جائیں گے۔", "Customer": "گاہک", "Aaj abhi koi payment nahi.": "آج ابھی کوئی ادائیگی نہیں۔", "Profit": "منافع", "Fees Li": "فیس لی", "Bank Charges": "بینک چارجز", "Cash Mila": "نقد ملا", "Subah ka balance likh kar Save dabayein, phir baqi balance khud nikalta rahega.": "صبح کا بیلنس لکھ کر محفوظ دبائیں، پھر باقی بیلنس خود نکلتا رہے گا۔", "Subah ka balance": "صبح کا بیلنس", "Jama kiye": "جمع کیے", "Bheje + charges": "بھیجے + چارجز", "Ab bank mein": "اب بینک میں", "Abhi koi record nahi.": "ابھی کوئی ریکارڈ نہیں۔", "payments": "ادائیگیاں", "Bheja": "بھیجا", "Baqi": "باقی", "Badlav Save Karein": "تبدیلی محفوظ کریں", "Save nahi hua!": "محفوظ نہیں ہوا!", "Amount likhein": "رقم لکھیں", "Sahi EasyPaisa number likhein": "درست ایزی پیسہ نمبر لکھیں", "Entry badal di ✅": "اندراج تبدیل ہو گیا ✅", "Save ho gaya ✅": "محفوظ ہو گیا ✅", "Yeh entry delete karni hai?": "یہ اندراج حذف کرنا ہے؟", "Delete ho gayi": "حذف ہو گیا", "Balance save ✅": "بیلنس محفوظ ✅", "Raqam likhein": "رقم لکھیں", "Jama ho gaya ✅": "جمع ہو گیا ✅", "Settings save ✅": "سیٹنگز محفوظ ✅", "Purana data is backup se badal jayega. Theek hai?": "پرانا ڈیٹا اس بیک اپ سے بدل جائے گا۔ ٹھیک ہے؟", "Backup wapas aa gaya ✅": "بیک اپ واپس آ گیا ✅", "Ghalat file": "غلط فائل", "Is phone mein voice nahi chalti": "اس فون میں آواز کا فیچر نہیں چلتا", "Awaaz samajh nahi aayi": "آواز سمجھ نہیں آئی", "Payment Slip": "ادائیگی کی رسید", "Tareekh": "تاریخ", "Receiver": "وصول کنندہ", "Amount": "رقم", "Fees": "فیس", "Total": "کل", "Shukriya!": "شکریہ!", "Transaction ID (zaroori nahi)": "ٹرانزیکشن آئی ڈی (ضروری نہیں)", "Jaise: 123456789012": "جیسے: 123456789012", "Dhoondein": "تلاش کریں", "TID, number ya naam": "ٹی آئی ڈی، نمبر یا نام", "Kuch nahi mila.": "کچھ نہیں ملا۔", "Easy Paisa Hisaab": "ایزی پیسہ حساب"};
+const UR={"Aaj ka Profit": "آج کا منافع", "Payments": "ادائیگیاں", "Total Bheja": "کل بھیجا", "Bank Baqi": "بینک باقی", "Nayi Payment": "نئی ادائیگی", "Entry karein": "اندراج کریں", "Aaj Ka Hisaab": "آج کا حساب", "Bank Balance": "بینک بیلنس", "Meezan Bank": "میزان بینک", "Purana Record": "پرانا ریکارڈ", "Din / Mahina": "دن / مہینہ", "Settings": "سیٹنگز", "Fees, naam": "فیس، نام", "Backup": "بیک اپ", "Data mehfooz": "ڈیٹا محفوظ", "← Wapas": "واپس →", "Customer ka naam (zaroori nahi)": "گاہک کا نام (ضروری نہیں)", "Receiver ka EasyPaisa number": "وصول کنندہ کا ایزی پیسہ نمبر", "Kitne paise bheje (Rs)": "کتنے پیسے بھیجے (روپے)", "Fees li (Rs)": "فیس لی (روپے)", "Bank charges (Rs)": "بینک چارجز (روپے)", "Save Karein": "محفوظ کریں", "Edit chhorein": "ترمیم چھوڑیں", "Aaj ki Payments": "آج کی ادائیگیاں", "Meezan Bank Balance": "میزان بینک بیلنس", "Aaj subah ka balance (Rs)": "آج صبح کا بیلنس (روپے)", "Save": "محفوظ", "Din mein bank mein paise daale (Rs)": "دن میں بینک میں پیسے ڈالے (روپے)", "Jama": "جمع", "Dukaan ka naam": "دکان کا نام", "Har 1000 rupay par fees (Rs)": "ہر 1000 روپے پر فیس (روپے)", "Kam se kam fees (Rs)": "کم از کم فیس (روپے)", "Meezan Bank charges har transfer par (Rs)": "ہر ٹرانسفر پر میزان بینک چارجز (روپے)", "Zaban": "زبان", "Settings Save Karein": "سیٹنگز محفوظ کریں", "Data sirf is phone mein hai. Hafte mein ek baar backup file bana kar WhatsApp par khud ko bhej dein.": "ڈیٹا صرف اس فون میں ہے۔ ہفتے میں ایک بار بیک اپ فائل بنا کر واٹس ایپ پر خود کو بھیج دیں۔", "⬇️ Backup banayein": "⬇️ بیک اپ بنائیں", "⬆️ Wapas layein": "⬆️ واپس لائیں", "Home": "ہوم", "Nayi Entry": "نیا اندراج", "Hisaab": "حساب", "Record": "ریکارڈ", "Jaise: Ali": "جیسے: علی", "Jaise: 5000": "جیسے: 5000", "Jaise: 200000": "جیسے: 200000", "Jaise: 50000": "جیسے: 50000", "Jaise: Ali EasyPaisa Point": "جیسے: علی ایزی پیسہ پوائنٹ", "Customer se lein": "گاہک سے لیں", "Bank se jayega": "بینک سے جائے گا", "Aapka Profit": "آپ کا منافع", "Amount likhein, fees aur profit khud ban jayenge.": "رقم لکھیں، فیس اور منافع خود بن جائیں گے۔", "Customer": "گاہک", "Aaj abhi koi payment nahi.": "آج ابھی کوئی ادائیگی نہیں۔", "Profit": "منافع", "Fees Li": "فیس لی", "Bank Charges": "بینک چارجز", "Cash Mila": "نقد ملا", "Subah ka balance likh kar Save dabayein, phir baqi balance khud nikalta rahega.": "صبح کا بیلنس لکھ کر محفوظ دبائیں، پھر باقی بیلنس خود نکلتا رہے گا۔", "Subah ka balance": "صبح کا بیلنس", "Jama kiye": "جمع کیے", "Bheje + charges": "بھیجے + چارجز", "Ab bank mein": "اب بینک میں", "Abhi koi record nahi.": "ابھی کوئی ریکارڈ نہیں۔", "payments": "ادائیگیاں", "Bheja": "بھیجا", "Baqi": "باقی", "Badlav Save Karein": "تبدیلی محفوظ کریں", "Save nahi hua!": "محفوظ نہیں ہوا!", "Amount likhein": "رقم لکھیں", "Sahi EasyPaisa number likhein": "درست ایزی پیسہ نمبر لکھیں", "Entry badal di ✅": "اندراج تبدیل ہو گیا ✅", "Save ho gaya ✅": "محفوظ ہو گیا ✅", "Yeh entry delete karni hai?": "یہ اندراج حذف کرنا ہے؟", "Delete ho gayi": "حذف ہو گیا", "Balance save ✅": "بیلنس محفوظ ✅", "Raqam likhein": "رقم لکھیں", "Jama ho gaya ✅": "جمع ہو گیا ✅", "Settings save ✅": "سیٹنگز محفوظ ✅", "Purana data is backup se badal jayega. Theek hai?": "پرانا ڈیٹا اس بیک اپ سے بدل جائے گا۔ ٹھیک ہے؟", "Backup wapas aa gaya ✅": "بیک اپ واپس آ گیا ✅", "Ghalat file": "غلط فائل", "Is phone mein voice nahi chalti": "اس فون میں آواز کا فیچر نہیں چلتا", "Awaaz samajh nahi aayi": "آواز سمجھ نہیں آئی", "Payment Slip": "ادائیگی کی رسید", "Tareekh": "تاریخ", "Receiver": "وصول کنندہ", "Amount": "رقم", "Fees": "فیس", "Total": "کل", "Shukriya!": "شکریہ!", "Transaction ID (zaroori nahi)": "ٹرانزیکشن آئی ڈی (ضروری نہیں)", "Jaise: 123456789012": "جیسے: 123456789012", "Dhoondein": "تلاش کریں", "TID, number ya naam": "ٹی آئی ڈی، نمبر یا نام", "Kuch nahi mila.": "کچھ نہیں ملا۔", "Easy Paisa Hisaab": "ایزی پیسہ حساب","PIN likhein":"پن کوڈ لکھیں","Ghalat PIN":"غلط پن کوڈ","Naya PIN (4 number, khali chhorein to wahi rahega)":"نیا پن کوڈ (4 نمبر، خالی چھوڑیں تو وہی رہے گا)","PIN 4 number ka hona chahiye":"پن کوڈ 4 نمبر کا ہونا چاہیے"};
 let LANG=(()=>{try{return localStorage.getItem('ep_lang')}catch(e){return null}})();
 const T=x=>LANG==='en'?(EN[x]??x):LANG==='ur'?(UR[x]??x):x;
 function applyLang(root){
@@ -408,7 +429,7 @@ function renderOld(){
 $('srch').addEventListener('input',()=>{renderOld();applyLang($('oldList'))});
 
 function renderSettings(){const s=db.settings;$('sName').value=s.name;$('sRate').value=s.rate;$('sMin').value=s.min;$('sBank').value=s.bank;$('sLang').value=LANG||'ru';$('shopName').textContent=s.name||T('Easy Paisa Hisaab')}
-$('saveSet').onclick=()=>{db.settings={name:$('sName').value.trim(),rate:num($('sRate').value),min:num($('sMin').value),bank:num($('sBank').value)};save();setLang($('sLang').value);toast('Settings save ✅')};
+$('saveSet').onclick=()=>{const np=$('sPin').value.trim();if(np&&!/^\d{4}$/.test(np))return toast('PIN 4 number ka hona chahiye');const oldPin=db.settings.pin||'1234';db.settings={pin:np||oldPin,name:$('sName').value.trim(),rate:num($('sRate').value),min:num($('sMin').value),bank:num($('sBank').value)};$('sPin').value='';save();setLang($('sLang').value);toast('Settings save ✅')};
 
 $('expBtn').onclick=()=>{const blob=new Blob([JSON.stringify(db)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='easypaisa-backup-'+dayKey()+'.json';a.click()};
 $('impBtn').onclick=()=>$('impFile').click();
@@ -434,12 +455,22 @@ document.querySelectorAll('.mic').forEach(btn=>btn.onclick=()=>{
   r.onend=()=>btn.classList.remove('on');r.onerror=()=>{btn.classList.remove('on');toast('Awaaz samajh nahi aayi')};
 });
 
+// PIN lock
+let pinBuf='',hiddenAt=0;
+const keys=$('keys');[1,2,3,4,5,6,7,8,9,'',0,'⌫'].forEach(k=>{const b=document.createElement('button');b.textContent=k;if(k==='')b.className='nb';b.onclick=()=>pinKey(k);keys.appendChild(b)});
+function showDots(){[...$('dots').children].forEach((d,i)=>d.classList.toggle('f',i<pinBuf.length))}
+function pinKey(k){if(k==='')return;if(k==='⌫')pinBuf=pinBuf.slice(0,-1);else if(pinBuf.length<4)pinBuf+=k;showDots();
+  if(pinBuf.length===4){if(pinBuf===(db.settings.pin||'1234')){$('lock').classList.remove('show');pinBuf='';showDots();if(!LANG)openLang()}
+    else{$('dots').classList.add('shake');toast('Ghalat PIN');setTimeout(()=>{$('dots').classList.remove('shake');pinBuf='';showDots()},400)}}}
+function lockApp(){pinBuf='';showDots();$('lock').classList.add('show')}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)hiddenAt=Date.now();else if(hiddenAt&&Date.now()-hiddenAt>120000)lockApp()});
+
 function renderAll(){renderSettings();renderToday();if($('p-old').classList.contains('show'))renderOld();applyLang()}
 function openLang(){document.querySelectorAll('.lopt').forEach(b=>b.classList.toggle('on',b.dataset.l===LANG));$('langPop').classList.add('show')}
 $('langBtn').onclick=openLang;
 document.querySelectorAll('.lopt').forEach(b=>b.onclick=()=>setLang(b.dataset.l));
 $('todayLbl').textContent=niceDay(dayKey());
-renderAll();updateCalc();applyLang();if(!LANG)openLang();
+renderAll();updateCalc();applyLang();lockApp();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
