@@ -440,7 +440,9 @@ function go(p){document.querySelectorAll('.page').forEach(s=>s.classList.toggle(
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.p));
 
-// Voice
+// Voice (admin switch: abhi band)
+const VOICE_ON=false;
+if(!VOICE_ON)document.querySelectorAll('.mic').forEach(b=>b.remove());
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 document.querySelectorAll('.mic').forEach(btn=>btn.onclick=()=>{
   if(!SR)return toast('Is phone mein voice nahi chalti');
