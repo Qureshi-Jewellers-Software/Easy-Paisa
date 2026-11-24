@@ -160,6 +160,9 @@ html[dir=rtl] .quick div{border-right:0;border-left:1px solid #eef1ef}html[dir=r
 .keys button:active{background:rgba(255,255,255,.35)}
 .keys button.nb{background:none}
 .lock .hint{font-size:12px;opacity:.8;margin-top:22px}
+.block{position:fixed;inset:0;z-index:99;background:linear-gradient(160deg,#3cc35a,var(--g) 45%,var(--g2));color:#fff;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;gap:10px}
+.block.show{display:flex}.block .logo{width:64px;height:64px;font-size:22px;border-radius:20px;margin-bottom:8px}
+.block h3{font-size:18px}.block p{font-size:14px;opacity:.92;line-height:1.6}.block .u{font-family:'Noto Nastaliq Urdu',serif;font-size:17px;line-height:2}
 </style>
 </head>
 <body>
@@ -286,6 +289,11 @@ html[dir=rtl] .quick div{border-right:0;border-left:1px solid #eef1ef}html[dir=r
   <div class="dots" id="dots"><i></i><i></i><i></i><i></i></div>
   <div class="keys" id="keys"></div>
 </div>
+<div class="block" id="block"><div class="logo">Rs</div>
+  <h3>Yeh app ab sirf APK se chalti hai</h3>
+  <p class="u" dir="rtl">یہ ایپ اب صرف APK سے چلتی ہے</p>
+  <p>This app now works only from the installed APK.</p>
+</div>
 <div class="toast" id="toast"></div>
 <div class="ovl" id="langPop"><div class="pop">
   <h3>🌐 Zaban chunein / Choose language</h3><p>زبان منتخب کریں</p>
@@ -295,6 +303,13 @@ html[dir=rtl] .quick div{border-right:0;border-left:1px solid #eef1ef}html[dir=r
 </div></div>
 
 <script>
+// Sirf APK (TWA) mein chale; browser mein band. Admin test: link ke aakhir mein ?dev=1
+(()=>{let ok=false;try{
+  if(document.referrer.startsWith('android-app://io.github.qureshi_jewellers_software.easypaisa'))sessionStorage.setItem('ep_twa','1');
+  if(matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches)sessionStorage.setItem('ep_twa','1');
+  if(new URLSearchParams(location.search).get('dev')==='1')sessionStorage.setItem('ep_twa','1');
+  ok=sessionStorage.getItem('ep_twa')==='1';}catch(e){}
+  window.EP_BLOCKED=!ok;})();
 const KEY='ep_data_v1';
 const $=id=>document.getElementById(id);
 const rs=n=>'Rs '+Math.round(n||0).toLocaleString('en-PK');
@@ -472,6 +487,7 @@ function openLang(){document.querySelectorAll('.lopt').forEach(b=>b.classList.to
 $('langBtn').onclick=openLang;
 document.querySelectorAll('.lopt').forEach(b=>b.onclick=()=>setLang(b.dataset.l));
 $('todayLbl').textContent=niceDay(dayKey());
+if(window.EP_BLOCKED){$('block').classList.add('show');throw 'blocked'}
 renderAll();updateCalc();applyLang();
 (()=>{let u=null;try{u=localStorage.getItem('ep_unlocked')}catch(e){};if(u)$('lock').classList.remove('show'),(!LANG&&openLang());else lockApp()})();
 $('lockBtn').onclick=()=>{lockApp();toast('Lock ho gaya 🔒')};
