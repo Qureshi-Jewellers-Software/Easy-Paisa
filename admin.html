@@ -42,7 +42,7 @@ input:focus{border-color:var(--g)}
 <main>
   <div class="card" id="loginCard">
     <h2>Admin Login</h2>
-    <input id="em" type="email" placeholder="Admin email" autocomplete="username">
+    <input id="em" type="text" autocapitalize="off" placeholder="Admin (jaise: admin)" autocomplete="username">
     <div style="position:relative"><input id="pw" type="password" placeholder="Password" autocomplete="current-password" style="padding-right:50px"><button type="button" class="eye" data-eye="pw" aria-label="Password dikhayein">👁️</button></div>
     <div class="err" id="lErr"></div>
     <button class="btn" id="lBtn">Login</button>
@@ -107,11 +107,11 @@ $('nBtn').onclick=async()=>{let em=$('nEm').value.trim().toLowerCase(),nm=$('nNm
   try{await rpc('ep_admin_add_client',{p_email:em,p_name:nm});$('nEm').value=$('nNm').value='';toast('Client ban gaya ✅');load()}catch(e){$('nErr').textContent=e.message}};
 $('refBtn').onclick=load;
 
-async function enter(){try{const ok=await rpc('is_admin');if(!ok){toast('Yeh admin account nahi');logout();return}
+async function enter(){try{const ok=await rpc('ep_is_admin');if(!ok){toast('Yeh admin account nahi');logout();return}
   $('loginCard').classList.add('hide');$('panel').classList.remove('hide');$('outBtn').classList.remove('hide');$('who').textContent=sess.email||'';load()}catch(e){toast(e.message)}}
 function logout(){keep(null);$('panel').classList.add('hide');$('loginCard').classList.remove('hide');$('outBtn').classList.add('hide');$('who').textContent='Login karein'}
 $('outBtn').onclick=logout;
-$('lBtn').onclick=async()=>{$('lErr').textContent='';try{keep(await auth({email:$('em').value.trim(),password:$('pw').value},'password'));$('pw').value='';enter()}catch(e){$('lErr').textContent=e.message}};
+$('lBtn').onclick=async()=>{$('lErr').textContent='';try{let e=$('em').value.trim().toLowerCase();if(!e.includes('@'))e+='@ephisaab.app';keep(await auth({email:e,password:$('pw').value},'password'));$('pw').value='';enter()}catch(e){$('lErr').textContent=e.message}};
 document.querySelectorAll('[data-eye]').forEach(b=>b.onclick=()=>{const i=$(b.dataset.eye),s=i.type==='password';i.type=s?'text':'password';b.classList.toggle('on',s);b.textContent=s?'🙈':'👁️'});
 if(sess)enter();
 </script>
