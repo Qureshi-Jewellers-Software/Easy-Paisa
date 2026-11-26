@@ -193,6 +193,21 @@ html[dir=rtl] .rdot{right:auto;left:12px}
 .login .field{text-align:start}
 .login .err{color:var(--red);font-size:13px;min-height:18px;margin:4px 0 8px}
 .eye{flex:0 0 40px;height:40px;border:0;background:none;font-size:18px;opacity:.55}.eye.on{opacity:1}
+.dt.d7{background:linear-gradient(145deg,#f5b700,#c98a00)}.dt.d8{background:linear-gradient(145deg,#5c6bc0,#303f9f)}
+.cashbig{border-radius:18px;padding:16px;background:linear-gradient(135deg,#38c057,var(--g2));color:#fff;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.cashbig.neg{background:linear-gradient(135deg,#f06a6e,#c93338)}.cashbig b{font-size:24px}
+.seg{display:flex;gap:8px;margin-bottom:10px}.seg button{flex:1;border:0;border-radius:14px;padding:12px 6px;font-weight:600;font-size:14px}
+.seg .pin{background:var(--gl);color:var(--g2)}.seg .pout{background:#fdecec;color:var(--red)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.chips button{border:1.5px solid #e2e8e4;background:#fff;border-radius:20px;padding:8px 12px;font-size:13px;color:var(--ink)}
+.chips button.on{border-color:var(--g);background:var(--gl);color:var(--g2);font-weight:600}
+.mvf{display:none;background:#f7f9f8;border-radius:16px;padding:12px;margin-bottom:12px}.mvf.show{display:block}
+.mvf .field{background:#fff}
+.mv{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #f0f2f1;font-size:13px}
+.mv:last-child{border:0}.mv .t{flex:1;min-width:0}.mv .t b{display:block;font-size:14px}.mv .t span{color:var(--mut);font-size:12px}
+.mv .a{font-weight:700;white-space:nowrap}.mv .a.p{color:var(--g2)}.mv .a.m{color:var(--red)}
+.mv .x{border:0;background:#fdecec;color:var(--red);border-radius:10px;padding:6px 9px;font-size:12px}
+.mv .w{border:0;background:#e7f8ee;color:#128c4a;border-radius:10px;padding:6px 9px;font-size:12px}
 .sync{font-size:12px;margin-top:10px;padding:10px 12px;border-radius:12px;background:#eef6ff;color:#1a56c4;font-weight:600}
 </style>
 </head>
@@ -221,6 +236,8 @@ html[dir=rtl] .rdot{right:auto;left:12px}
     <button class="dt d3" data-go="p-bank"><div class="ic">🏦</div><div><b>Bank Balance</b><span id="tBal">Meezan Bank</span></div></button>
     <button class="dt d4" data-go="p-old"><div class="ic">📅</div><div><b>Purana Record</b><span>Din / Mahina</span></div></button>
     <button class="dt d5" data-go="p-set"><div class="ic">⚙️</div><div><b>Settings</b><span>Fees, naam</span></div></button>
+    <button class="dt d7" data-go="p-cash"><div class="ic">💵</div><div><b>Galla / Cash</b><span id="tCash">Galle ka hisaab</span></div></button>
+    <button class="dt d8" data-go="p-inv"><div class="ic">🤝</div><div><b>Investors</b><span id="tInv">Kitne diye</span></div></button>
     <button class="dt d6" data-go="p-backup"><span class="rdot" id="bkDot"></span><div class="ic">💾</div><div><b>Backup</b><span>Data mehfooz</span></div></button>
   </div>
 </section>
@@ -292,6 +309,61 @@ html[dir=rtl] .rdot{right:auto;left:12px}
     <button class="btn" id="saveSet">Settings Save Karein</button>
   </div>
 </section>
+<!-- GALLA / CASH -->
+<section class="page" id="p-cash">
+  <button class="back" data-go="p-home">← Wapas</button>
+  <div class="card">
+    <h2><i>💵</i>Galla / Cash</h2>
+    <div class="cashbig" id="cashBig"><span>Galle mein abhi</span><b id="cashNow">—</b></div>
+    <div class="field"><div class="lbl"><label>Aaj subah galle mein cash (Rs)</label><input id="cashOpen" type="number" inputmode="numeric" placeholder="Jaise: 50000"></div><button class="mini" id="saveCashOpen">Save</button></div>
+    <div class="balbox" id="cashBox"></div>
+  </div>
+  <div class="card">
+    <div class="seg"><button class="pin" id="btnIn">➕ Paise daale</button><button class="pout" id="btnOut">➖ Paise nikale</button></div>
+    <div class="mvf" id="fIn">
+      <label class="note">Kahan se aaye?</label>
+      <div class="chips" id="inSrc"><button data-v="jeb" class="on">👛 Apni jeb se</button><button data-v="loan">🤝 Loan</button><button data-v="ghar">🏠 Ghar walon se</button><button data-v="other">✏️ Koi aur</button></div>
+      <div class="field" id="inWhoF" style="display:none"><div class="lbl"><label id="inWhoL">Kis se liya</label><input id="inWho" list="loanNames" placeholder="Naam"></div></div>
+      <div class="field"><div class="lbl"><label>Raqam (Rs)</label><input id="inAmt" type="number" inputmode="numeric" placeholder="Jaise: 10000"></div></div>
+      <div class="field"><div class="lbl"><label>Note (zaroori nahi)</label><input id="inNote"></div></div>
+      <button class="btn" id="saveIn">Save Karein</button>
+    </div>
+    <div class="mvf" id="fOut">
+      <label class="note">Kis liye nikale?</label>
+      <div class="chips" id="outKind"><button data-v="bank" class="on">🏦 Bank mein jama</button><button data-v="exp">🧾 Kharcha / Ghar</button><button data-v="loanback">🤝 Loan wapas diya</button><button data-v="out">✏️ Koi aur</button></div>
+      <div class="field" id="outWhoF" style="display:none"><div class="lbl"><label id="outWhoL">Kis ko diya</label><input id="outWho" list="loanNames" placeholder="Naam"></div></div>
+      <div class="field"><div class="lbl"><label>Raqam (Rs)</label><input id="outAmt" type="number" inputmode="numeric" placeholder="Jaise: 10000"></div></div>
+      <div class="field"><div class="lbl"><label>Note (zaroori nahi)</label><input id="outNote"></div></div>
+      <button class="btn" id="saveOut">Save Karein</button>
+    </div>
+    <datalist id="loanNames"></datalist>
+    <h2 style="margin-top:6px"><i>🧾</i>Aaj ka len den</h2>
+    <div id="mvList"></div>
+  </div>
+  <div class="card">
+    <h2><i>🤝</i>Loan ka hisaab</h2>
+    <div id="loanList"></div>
+  </div>
+</section>
+
+<!-- INVESTORS -->
+<section class="page" id="p-inv">
+  <button class="back" data-go="p-home">← Wapas</button>
+  <div class="card">
+    <h2><i>🤝</i>Investor ko paise diye</h2>
+    <div class="field"><div class="lbl"><label>Investor ka naam</label><input id="ivWho" list="invNames" placeholder="Jaise: Haji Sahab"></div></div>
+    <div class="field"><div class="lbl"><label>Kitne diye (Rs)</label><input id="ivAmt" type="number" inputmode="numeric" placeholder="Jaise: 5000"></div></div>
+    <div class="field"><div class="lbl"><label>Note (zaroori nahi)</label><input id="ivNote"></div></div>
+    <datalist id="invNames"></datalist>
+    <p class="note" style="margin:-2px 0 10px">Yeh raqam galle se minus ho jayegi.</p>
+    <button class="btn" id="saveInv">Save Karein</button>
+  </div>
+  <div class="card">
+    <h2><i>📒</i>Investors ka hisaab</h2>
+    <div id="invList"></div>
+  </div>
+</section>
+
 <!-- BACKUP -->
 <section class="page" id="p-backup">
   <button class="back" data-go="p-home">← Wapas</button>
@@ -353,6 +425,8 @@ html[dir=rtl] .rdot{right:auto;left:12px}
     <button data-m="p-bank"><i>🏦</i>Bank Balance</button>
     <button data-m="p-old"><i>📅</i>Purana Record</button>
     <button data-m="p-set"><i>⚙️</i>Settings</button>
+    <button data-m="p-cash"><i>💵</i>Galla / Cash</button>
+    <button data-m="p-inv"><i>🤝</i>Investors</button>
     <button data-m="p-backup"><i>💾</i>Backup</button>
     <button data-m="lang"><i>🌐</i>Language</button>
   </div>
@@ -408,9 +482,9 @@ const EN={
 'Save ho gaya ✅':'Saved ✅','Yeh entry delete karni hai?':'Delete this entry?','Delete ho gayi':'Deleted','Balance save ✅':'Balance saved ✅','Raqam likhein':'Enter amount',
 'Jama ho gaya ✅':'Added ✅','Settings save ✅':'Settings saved ✅','Purana data is backup se badal jayega. Theek hai?':'Current data will be replaced by this backup. OK?',
 'Backup wapas aa gaya ✅':'Backup restored ✅','Ghalat file':'Wrong file','Is phone mein voice nahi chalti':'Voice is not supported on this phone','Awaaz samajh nahi aayi':'Could not understand the voice',
-'Payment Slip':'Payment Slip','Transaction ID (zaroori nahi)':'Transaction ID (optional)','Jaise: 123456789012':'e.g. 123456789012','Dhoondein':'Search','TID, number ya naam':'TID, number or name','Kuch nahi mila.':'Nothing found.','Easy Paisa Hisaab':'Easy Paisa Hisaab','PIN likhein':'Enter PIN','⚠️ 7 din se backup nahi bana':'⚠️ No backup in the last 7 days','Aaj ka backup':"Today's backup",'Is hafte ka backup':"This week's backup",'Is mahine ka backup':"This month's backup",'Poora backup':'Full backup','Aakhri backup':'Last backup','nayi entries jod di gayin ✅':'new entries added ✅','Backup ban gaya ✅':'Backup created ✅','🚪 Logout':'🚪 Logout','Logout ho gaya':'Logged out','🔒 Lock karein':'🔒 Lock app','Lock ho gaya 🔒':'Locked 🔒','Ghalat PIN':'Wrong PIN','Naya PIN (4 number, khali chhorein to wahi rahega)':'New PIN (4 digits, leave empty to keep)','PIN 4 number ka hona chahiye':'PIN must be 4 digits','Tareekh':'Date','Login karein':'Login','Pehli dafa login ke liye internet chahiye':'Internet is needed for the first login','Username':'Username','Password':'Password','Login':'Login','Ghalat username ya password':'Wrong username or password','Internet nahi hai':'No internet','Payment baqi hai':'Payment pending','Aapka account band hai. Admin se rabta karein.':'Your account is turned off. Please contact the admin.','Account abhi set nahi hua':'Account not set up yet','Admin se rabta karein.':'Please contact the admin.','🔄 Dobara check karein':'🔄 Check again','☁️ Sab entries online mehfooz hain':'☁️ All entries are saved online','☁️ Online bhejni baqi':'☁️ Waiting to upload','☁️ Online band (sirf phone mein)':'☁️ Online off (phone only)','Login ho gaya ✅':'Logged in ✅','Receiver':'Receiver','Amount':'Amount','Fees':'Fee','Total':'Total','Shukriya!':'Thank you!'
+'Payment Slip':'Payment Slip','Transaction ID (zaroori nahi)':'Transaction ID (optional)','Jaise: 123456789012':'e.g. 123456789012','Dhoondein':'Search','TID, number ya naam':'TID, number or name','Kuch nahi mila.':'Nothing found.','Easy Paisa Hisaab':'Easy Paisa Hisaab','PIN likhein':'Enter PIN','⚠️ 7 din se backup nahi bana':'⚠️ No backup in the last 7 days','Aaj ka backup':"Today's backup",'Is hafte ka backup':"This week's backup",'Is mahine ka backup':"This month's backup",'Poora backup':'Full backup','Aakhri backup':'Last backup','nayi entries jod di gayin ✅':'new entries added ✅','Backup ban gaya ✅':'Backup created ✅','🚪 Logout':'🚪 Logout','Logout ho gaya':'Logged out','🔒 Lock karein':'🔒 Lock app','Lock ho gaya 🔒':'Locked 🔒','Ghalat PIN':'Wrong PIN','Naya PIN (4 number, khali chhorein to wahi rahega)':'New PIN (4 digits, leave empty to keep)','PIN 4 number ka hona chahiye':'PIN must be 4 digits','Tareekh':'Date',"Galla / Cash":"Cash Drawer","Galle ka hisaab":"Cash account","Investors":"Investors","Kitne diye":"How much paid","Galle mein abhi":"Cash in drawer now","Aaj subah galle mein cash (Rs)":"This morning's cash (Rs)","➕ Paise daale":"➕ Cash in","➖ Paise nikale":"➖ Cash out","Kahan se aaye?":"Where from?","👛 Apni jeb se":"👛 Own pocket","🤝 Loan":"🤝 Loan","🏠 Ghar walon se":"🏠 From family","✏️ Koi aur":"✏️ Other","Kis se liya":"Taken from","Naam":"Name","Raqam (Rs)":"Amount (Rs)","Jaise: 10000":"e.g. 10000","Note (zaroori nahi)":"Note (optional)","Kis liye nikale?":"Taken out for?","🏦 Bank mein jama":"🏦 Deposited in bank","🧾 Kharcha / Ghar":"🧾 Expense / Home","🤝 Loan wapas diya":"🤝 Loan repaid","Kis ko diya":"Given to","Aaj ka len den":"Today's cash in/out","Loan ka hisaab":"Loans","Investor ko paise diye":"Pay an investor","Investor ka naam":"Investor name","Jaise: Haji Sahab":"e.g. Haji Sahab","Kitne diye (Rs)":"Amount paid (Rs)","Yeh raqam galle se minus ho jayegi.":"This amount will be deducted from the cash drawer.","Investors ka hisaab":"Investor accounts","Apni jeb se":"Own pocket","Loan":"Loan","Ghar walon se":"From family","Koi aur":"Other","Bank mein jama":"Deposited in bank","Kharcha / Ghar":"Expense / Home","Loan wapas diya":"Loan repaid","Investor ko diye":"Paid to investor","Paise daale":"Cash in","Paise nikale":"Cash out","Ghar mein kis se":"From whom at home","Kahan se":"From where","Kis ko wapas diya":"Repaid to","Kis ko / kis liye":"To whom / for what","Naam likhein":"Enter name","Subah galle ka cash likh kar Save dabayein, phir baqi khud nikalta rahega.":"Enter this morning's cash and tap Save, the rest is calculated automatically.","Galle mein":"In drawer","Subah ka cash":"Morning cash","Customers se mila":"From customers","Aaj koi len den nahi.":"No cash in/out today.","Liya":"Taken","Wapas diya":"Repaid","Pura ✅":"Cleared ✅","Koi loan nahi.":"No loans.","Investor Raseed":"Investor Receipt","Aaj diye":"Paid today","Ab tak kul diye":"Total paid so far","Is mahine":"This month","Is mahine kul diye":"Total paid this month","dafa":"times","Aakhri":"Last","Abhi koi investor entry nahi.":"No investor entries yet.",'Login karein':'Login','Pehli dafa login ke liye internet chahiye':'Internet is needed for the first login','Username':'Username','Password':'Password','Login':'Login','Ghalat username ya password':'Wrong username or password','Internet nahi hai':'No internet','Payment baqi hai':'Payment pending','Aapka account band hai. Admin se rabta karein.':'Your account is turned off. Please contact the admin.','Account abhi set nahi hua':'Account not set up yet','Admin se rabta karein.':'Please contact the admin.','🔄 Dobara check karein':'🔄 Check again','☁️ Sab entries online mehfooz hain':'☁️ All entries are saved online','☁️ Online bhejni baqi':'☁️ Waiting to upload','☁️ Online band (sirf phone mein)':'☁️ Online off (phone only)','Login ho gaya ✅':'Logged in ✅','Receiver':'Receiver','Amount':'Amount','Fees':'Fee','Total':'Total','Shukriya!':'Thank you!'
 };
-const UR={"Aaj ka Profit": "آج کا منافع", "Payments": "ادائیگیاں", "Total Bheja": "کل بھیجا", "Bank Baqi": "بینک باقی", "Nayi Payment": "نئی ادائیگی", "Entry karein": "اندراج کریں", "Aaj Ka Hisaab": "آج کا حساب", "Bank Balance": "بینک بیلنس", "Meezan Bank": "میزان بینک", "Purana Record": "پرانا ریکارڈ", "Din / Mahina": "دن / مہینہ", "Settings": "سیٹنگز", "Fees, naam": "فیس، نام", "Backup": "بیک اپ", "Data mehfooz": "ڈیٹا محفوظ", "← Wapas": "واپس →", "Customer ka naam (zaroori nahi)": "گاہک کا نام (ضروری نہیں)", "Receiver ka EasyPaisa number": "وصول کنندہ کا ایزی پیسہ نمبر", "Kitne paise bheje (Rs)": "کتنے پیسے بھیجے (روپے)", "Fees li (Rs)": "فیس لی (روپے)", "Bank charges (Rs)": "بینک چارجز (روپے)", "Save Karein": "محفوظ کریں", "Edit chhorein": "ترمیم چھوڑیں", "Aaj ki Payments": "آج کی ادائیگیاں", "Meezan Bank Balance": "میزان بینک بیلنس", "Aaj subah ka balance (Rs)": "آج صبح کا بیلنس (روپے)", "Save": "محفوظ", "Din mein bank mein paise daale (Rs)": "دن میں بینک میں پیسے ڈالے (روپے)", "Jama": "جمع", "Dukaan ka naam": "دکان کا نام", "Har 1000 rupay par fees (Rs)": "ہر 1000 روپے پر فیس (روپے)", "Kam se kam fees (Rs)": "کم از کم فیس (روپے)", "Meezan Bank charges har transfer par (Rs)": "ہر ٹرانسفر پر میزان بینک چارجز (روپے)", "Zaban": "زبان", "Settings Save Karein": "سیٹنگز محفوظ کریں", "Data sirf is phone mein hai. Hafte mein ek baar backup file bana kar WhatsApp par khud ko bhej dein.": "ڈیٹا صرف اس فون میں ہے۔ ہفتے میں ایک بار بیک اپ فائل بنا کر واٹس ایپ پر خود کو بھیج دیں۔", "⬇️ Backup banayein": "⬇️ بیک اپ بنائیں", "⬆️ Wapas layein": "⬆️ واپس لائیں", "Home": "ہوم", "Nayi Entry": "نیا اندراج", "Hisaab": "حساب", "Record": "ریکارڈ", "Jaise: Ali": "جیسے: علی", "Jaise: 5000": "جیسے: 5000", "Jaise: 200000": "جیسے: 200000", "Jaise: 50000": "جیسے: 50000", "Jaise: Ali EasyPaisa Point": "جیسے: علی ایزی پیسہ پوائنٹ", "Customer se lein": "گاہک سے لیں", "Bank se jayega": "بینک سے جائے گا", "Aapka Profit": "آپ کا منافع", "Amount likhein, fees aur profit khud ban jayenge.": "رقم لکھیں، فیس اور منافع خود بن جائیں گے۔", "Customer": "گاہک", "Aaj abhi koi payment nahi.": "آج ابھی کوئی ادائیگی نہیں۔", "Profit": "منافع", "Fees Li": "فیس لی", "Bank Charges": "بینک چارجز", "Cash Mila": "نقد ملا", "Subah ka balance likh kar Save dabayein, phir baqi balance khud nikalta rahega.": "صبح کا بیلنس لکھ کر محفوظ دبائیں، پھر باقی بیلنس خود نکلتا رہے گا۔", "Subah ka balance": "صبح کا بیلنس", "Jama kiye": "جمع کیے", "Bheje + charges": "بھیجے + چارجز", "Ab bank mein": "اب بینک میں", "Abhi koi record nahi.": "ابھی کوئی ریکارڈ نہیں۔", "payments": "ادائیگیاں", "Bheja": "بھیجا", "Baqi": "باقی", "Badlav Save Karein": "تبدیلی محفوظ کریں", "Save nahi hua!": "محفوظ نہیں ہوا!", "Amount likhein": "رقم لکھیں", "Sahi EasyPaisa number likhein": "درست ایزی پیسہ نمبر لکھیں", "Entry badal di ✅": "اندراج تبدیل ہو گیا ✅", "Save ho gaya ✅": "محفوظ ہو گیا ✅", "Yeh entry delete karni hai?": "یہ اندراج حذف کرنا ہے؟", "Delete ho gayi": "حذف ہو گیا", "Balance save ✅": "بیلنس محفوظ ✅", "Raqam likhein": "رقم لکھیں", "Jama ho gaya ✅": "جمع ہو گیا ✅", "Settings save ✅": "سیٹنگز محفوظ ✅", "Purana data is backup se badal jayega. Theek hai?": "پرانا ڈیٹا اس بیک اپ سے بدل جائے گا۔ ٹھیک ہے؟", "Backup wapas aa gaya ✅": "بیک اپ واپس آ گیا ✅", "Ghalat file": "غلط فائل", "Is phone mein voice nahi chalti": "اس فون میں آواز کا فیچر نہیں چلتا", "Awaaz samajh nahi aayi": "آواز سمجھ نہیں آئی", "Payment Slip": "ادائیگی کی رسید", "Tareekh": "تاریخ", "Login karein": "لاگ ان کریں", "Pehli dafa login ke liye internet chahiye": "پہلی دفعہ لاگ ان کے لیے انٹرنیٹ چاہیے", "Username": "یوزر نیم", "Password": "پاس ورڈ", "Login": "لاگ ان", "Ghalat username ya password": "غلط یوزر نیم یا پاس ورڈ", "Internet nahi hai": "انٹرنیٹ نہیں ہے", "Payment baqi hai": "ادائیگی باقی ہے", "Aapka account band hai. Admin se rabta karein.": "آپ کا اکاؤنٹ بند ہے۔ ایڈمن سے رابطہ کریں۔", "Account abhi set nahi hua": "اکاؤنٹ ابھی سیٹ نہیں ہوا", "Admin se rabta karein.": "ایڈمن سے رابطہ کریں۔", "🔄 Dobara check karein": "🔄 دوبارہ چیک کریں", "☁️ Sab entries online mehfooz hain": "☁️ سب اندراج آن لائن محفوظ ہیں", "☁️ Online bhejni baqi": "☁️ آن لائن بھیجنا باقی", "☁️ Online band (sirf phone mein)": "☁️ آن لائن بند (صرف فون میں)", "Login ho gaya ✅": "لاگ ان ہو گیا ✅", "Receiver": "وصول کنندہ", "Amount": "رقم", "Fees": "فیس", "Total": "کل", "Shukriya!": "شکریہ!", "Transaction ID (zaroori nahi)": "ٹرانزیکشن آئی ڈی (ضروری نہیں)", "Jaise: 123456789012": "جیسے: 123456789012", "Dhoondein": "تلاش کریں", "TID, number ya naam": "ٹی آئی ڈی، نمبر یا نام", "Kuch nahi mila.": "کچھ نہیں ملا۔", "Easy Paisa Hisaab": "ایزی پیسہ حساب","PIN likhein":"پن کوڈ لکھیں","⚠️ 7 din se backup nahi bana":"⚠️ 7 دن سے بیک اپ نہیں بنا","Aaj ka backup":"آج کا بیک اپ","Is hafte ka backup":"اس ہفتے کا بیک اپ","Is mahine ka backup":"اس مہینے کا بیک اپ","Poora backup":"پورا بیک اپ","Aakhri backup":"آخری بیک اپ","nayi entries jod di gayin ✅":"نئے اندراج شامل ہو گئے ✅","Backup ban gaya ✅":"بیک اپ بن گیا ✅","🚪 Logout":"🚪 لاگ آؤٹ","Logout ho gaya":"لاگ آؤٹ ہو گیا","🔒 Lock karein":"🔒 لاک کریں","Lock ho gaya 🔒":"لاک ہو گیا 🔒","Ghalat PIN":"غلط پن کوڈ","Naya PIN (4 number, khali chhorein to wahi rahega)":"نیا پن کوڈ (4 نمبر، خالی چھوڑیں تو وہی رہے گا)","PIN 4 number ka hona chahiye":"پن کوڈ 4 نمبر کا ہونا چاہیے"};
+const UR={"Aaj ka Profit": "آج کا منافع", "Payments": "ادائیگیاں", "Total Bheja": "کل بھیجا", "Bank Baqi": "بینک باقی", "Nayi Payment": "نئی ادائیگی", "Entry karein": "اندراج کریں", "Aaj Ka Hisaab": "آج کا حساب", "Bank Balance": "بینک بیلنس", "Meezan Bank": "میزان بینک", "Purana Record": "پرانا ریکارڈ", "Din / Mahina": "دن / مہینہ", "Settings": "سیٹنگز", "Fees, naam": "فیس، نام", "Backup": "بیک اپ", "Data mehfooz": "ڈیٹا محفوظ", "← Wapas": "واپس →", "Customer ka naam (zaroori nahi)": "گاہک کا نام (ضروری نہیں)", "Receiver ka EasyPaisa number": "وصول کنندہ کا ایزی پیسہ نمبر", "Kitne paise bheje (Rs)": "کتنے پیسے بھیجے (روپے)", "Fees li (Rs)": "فیس لی (روپے)", "Bank charges (Rs)": "بینک چارجز (روپے)", "Save Karein": "محفوظ کریں", "Edit chhorein": "ترمیم چھوڑیں", "Aaj ki Payments": "آج کی ادائیگیاں", "Meezan Bank Balance": "میزان بینک بیلنس", "Aaj subah ka balance (Rs)": "آج صبح کا بیلنس (روپے)", "Save": "محفوظ", "Din mein bank mein paise daale (Rs)": "دن میں بینک میں پیسے ڈالے (روپے)", "Jama": "جمع", "Dukaan ka naam": "دکان کا نام", "Har 1000 rupay par fees (Rs)": "ہر 1000 روپے پر فیس (روپے)", "Kam se kam fees (Rs)": "کم از کم فیس (روپے)", "Meezan Bank charges har transfer par (Rs)": "ہر ٹرانسفر پر میزان بینک چارجز (روپے)", "Zaban": "زبان", "Settings Save Karein": "سیٹنگز محفوظ کریں", "Data sirf is phone mein hai. Hafte mein ek baar backup file bana kar WhatsApp par khud ko bhej dein.": "ڈیٹا صرف اس فون میں ہے۔ ہفتے میں ایک بار بیک اپ فائل بنا کر واٹس ایپ پر خود کو بھیج دیں۔", "⬇️ Backup banayein": "⬇️ بیک اپ بنائیں", "⬆️ Wapas layein": "⬆️ واپس لائیں", "Home": "ہوم", "Nayi Entry": "نیا اندراج", "Hisaab": "حساب", "Record": "ریکارڈ", "Jaise: Ali": "جیسے: علی", "Jaise: 5000": "جیسے: 5000", "Jaise: 200000": "جیسے: 200000", "Jaise: 50000": "جیسے: 50000", "Jaise: Ali EasyPaisa Point": "جیسے: علی ایزی پیسہ پوائنٹ", "Customer se lein": "گاہک سے لیں", "Bank se jayega": "بینک سے جائے گا", "Aapka Profit": "آپ کا منافع", "Amount likhein, fees aur profit khud ban jayenge.": "رقم لکھیں، فیس اور منافع خود بن جائیں گے۔", "Customer": "گاہک", "Aaj abhi koi payment nahi.": "آج ابھی کوئی ادائیگی نہیں۔", "Profit": "منافع", "Fees Li": "فیس لی", "Bank Charges": "بینک چارجز", "Cash Mila": "نقد ملا", "Subah ka balance likh kar Save dabayein, phir baqi balance khud nikalta rahega.": "صبح کا بیلنس لکھ کر محفوظ دبائیں، پھر باقی بیلنس خود نکلتا رہے گا۔", "Subah ka balance": "صبح کا بیلنس", "Jama kiye": "جمع کیے", "Bheje + charges": "بھیجے + چارجز", "Ab bank mein": "اب بینک میں", "Abhi koi record nahi.": "ابھی کوئی ریکارڈ نہیں۔", "payments": "ادائیگیاں", "Bheja": "بھیجا", "Baqi": "باقی", "Badlav Save Karein": "تبدیلی محفوظ کریں", "Save nahi hua!": "محفوظ نہیں ہوا!", "Amount likhein": "رقم لکھیں", "Sahi EasyPaisa number likhein": "درست ایزی پیسہ نمبر لکھیں", "Entry badal di ✅": "اندراج تبدیل ہو گیا ✅", "Save ho gaya ✅": "محفوظ ہو گیا ✅", "Yeh entry delete karni hai?": "یہ اندراج حذف کرنا ہے؟", "Delete ho gayi": "حذف ہو گیا", "Balance save ✅": "بیلنس محفوظ ✅", "Raqam likhein": "رقم لکھیں", "Jama ho gaya ✅": "جمع ہو گیا ✅", "Settings save ✅": "سیٹنگز محفوظ ✅", "Purana data is backup se badal jayega. Theek hai?": "پرانا ڈیٹا اس بیک اپ سے بدل جائے گا۔ ٹھیک ہے؟", "Backup wapas aa gaya ✅": "بیک اپ واپس آ گیا ✅", "Ghalat file": "غلط فائل", "Is phone mein voice nahi chalti": "اس فون میں آواز کا فیچر نہیں چلتا", "Awaaz samajh nahi aayi": "آواز سمجھ نہیں آئی", "Payment Slip": "ادائیگی کی رسید", "Tareekh": "تاریخ","Galla / Cash":"گلہ / کیش","Galle ka hisaab":"گلے کا حساب","Investors":"انویسٹرز","Kitne diye":"کتنے دیے","Galle mein abhi":"گلے میں ابھی","Aaj subah galle mein cash (Rs)":"آج صبح گلے میں کیش (روپے)","➕ Paise daale":"➕ پیسے ڈالے","➖ Paise nikale":"➖ پیسے نکالے","Kahan se aaye?":"کہاں سے آئے؟","👛 Apni jeb se":"👛 اپنی جیب سے","🤝 Loan":"🤝 قرض","🏠 Ghar walon se":"🏠 گھر والوں سے","✏️ Koi aur":"✏️ کوئی اور","Kis se liya":"کس سے لیا","Naam":"نام","Raqam (Rs)":"رقم (روپے)","Jaise: 10000":"جیسے: 10000","Note (zaroori nahi)":"نوٹ (ضروری نہیں)","Kis liye nikale?":"کس لیے نکالے؟","🏦 Bank mein jama":"🏦 بینک میں جمع","🧾 Kharcha / Ghar":"🧾 خرچہ / گھر","🤝 Loan wapas diya":"🤝 قرض واپس دیا","Kis ko diya":"کس کو دیا","Aaj ka len den":"آج کا لین دین","Loan ka hisaab":"قرض کا حساب","Investor ko paise diye":"انویسٹر کو پیسے دیے","Investor ka naam":"انویسٹر کا نام","Jaise: Haji Sahab":"جیسے: حاجی صاحب","Kitne diye (Rs)":"کتنے دیے (روپے)","Yeh raqam galle se minus ho jayegi.":"یہ رقم گلے سے مائنس ہو جائے گی۔","Investors ka hisaab":"انویسٹرز کا حساب","Apni jeb se":"اپنی جیب سے","Loan":"قرض","Ghar walon se":"گھر والوں سے","Koi aur":"کوئی اور","Bank mein jama":"بینک میں جمع","Kharcha / Ghar":"خرچہ / گھر","Loan wapas diya":"قرض واپس دیا","Investor ko diye":"انویسٹر کو دیے","Paise daale":"پیسے ڈالے","Paise nikale":"پیسے نکالے","Ghar mein kis se":"گھر میں کس سے","Kahan se":"کہاں سے","Kis ko wapas diya":"کس کو واپس دیا","Kis ko / kis liye":"کس کو / کس لیے","Naam likhein":"نام لکھیں","Subah galle ka cash likh kar Save dabayein, phir baqi khud nikalta rahega.":"صبح گلے کا کیش لکھ کر محفوظ دبائیں، پھر باقی خود نکلتا رہے گا۔","Galle mein":"گلے میں","Subah ka cash":"صبح کا کیش","Customers se mila":"گاہکوں سے ملا","Aaj koi len den nahi.":"آج کوئی لین دین نہیں۔","Liya":"لیا","Wapas diya":"واپس دیا","Pura ✅":"پورا ✅","Koi loan nahi.":"کوئی قرض نہیں۔","Investor Raseed":"انویسٹر رسید","Aaj diye":"آج دیے","Ab tak kul diye":"اب تک کل دیے","Is mahine":"اس مہینے","Is mahine kul diye":"اس مہینے کل دیے","dafa":"دفعہ","Aakhri":"آخری","Abhi koi investor entry nahi.":"ابھی کوئی انویسٹر اندراج نہیں۔", "Login karein": "لاگ ان کریں", "Pehli dafa login ke liye internet chahiye": "پہلی دفعہ لاگ ان کے لیے انٹرنیٹ چاہیے", "Username": "یوزر نیم", "Password": "پاس ورڈ", "Login": "لاگ ان", "Ghalat username ya password": "غلط یوزر نیم یا پاس ورڈ", "Internet nahi hai": "انٹرنیٹ نہیں ہے", "Payment baqi hai": "ادائیگی باقی ہے", "Aapka account band hai. Admin se rabta karein.": "آپ کا اکاؤنٹ بند ہے۔ ایڈمن سے رابطہ کریں۔", "Account abhi set nahi hua": "اکاؤنٹ ابھی سیٹ نہیں ہوا", "Admin se rabta karein.": "ایڈمن سے رابطہ کریں۔", "🔄 Dobara check karein": "🔄 دوبارہ چیک کریں", "☁️ Sab entries online mehfooz hain": "☁️ سب اندراج آن لائن محفوظ ہیں", "☁️ Online bhejni baqi": "☁️ آن لائن بھیجنا باقی", "☁️ Online band (sirf phone mein)": "☁️ آن لائن بند (صرف فون میں)", "Login ho gaya ✅": "لاگ ان ہو گیا ✅", "Receiver": "وصول کنندہ", "Amount": "رقم", "Fees": "فیس", "Total": "کل", "Shukriya!": "شکریہ!", "Transaction ID (zaroori nahi)": "ٹرانزیکشن آئی ڈی (ضروری نہیں)", "Jaise: 123456789012": "جیسے: 123456789012", "Dhoondein": "تلاش کریں", "TID, number ya naam": "ٹی آئی ڈی، نمبر یا نام", "Kuch nahi mila.": "کچھ نہیں ملا۔", "Easy Paisa Hisaab": "ایزی پیسہ حساب","PIN likhein":"پن کوڈ لکھیں","⚠️ 7 din se backup nahi bana":"⚠️ 7 دن سے بیک اپ نہیں بنا","Aaj ka backup":"آج کا بیک اپ","Is hafte ka backup":"اس ہفتے کا بیک اپ","Is mahine ka backup":"اس مہینے کا بیک اپ","Poora backup":"پورا بیک اپ","Aakhri backup":"آخری بیک اپ","nayi entries jod di gayin ✅":"نئے اندراج شامل ہو گئے ✅","Backup ban gaya ✅":"بیک اپ بن گیا ✅","🚪 Logout":"🚪 لاگ آؤٹ","Logout ho gaya":"لاگ آؤٹ ہو گیا","🔒 Lock karein":"🔒 لاک کریں","Lock ho gaya 🔒":"لاک ہو گیا 🔒","Ghalat PIN":"غلط پن کوڈ","Naya PIN (4 number, khali chhorein to wahi rahega)":"نیا پن کوڈ (4 نمبر، خالی چھوڑیں تو وہی رہے گا)","PIN 4 number ka hona chahiye":"پن کوڈ 4 نمبر کا ہونا چاہیے"};
 let LANG=(()=>{try{return localStorage.getItem('ep_lang')}catch(e){return null}})();
 const T=x=>LANG==='en'?(EN[x]??x):LANG==='ur'?(UR[x]??x):x;
 function applyLang(root){
@@ -422,12 +496,15 @@ function applyLang(root){
 }
 function setLang(l){LANG=l;$('saveBtn').textContent=T(editId?'Badlav Save Karein':'Save Karein');$('langPop').classList.remove('show');try{localStorage.setItem('ep_lang',l)}catch(e){}renderAll();updateCalc();applyLang()}
 
-let db={settings:{name:'',rate:20,min:20,bank:0},tx:[],bal:{}};
+let db={settings:{name:'',rate:20,min:20,bank:0},tx:[],bal:{},mv:[],cash:{}};
 try{const s=localStorage.getItem(KEY);if(s)db=Object.assign(db,JSON.parse(s));}catch(e){}
+if(!Array.isArray(db.mv))db.mv=[];if(!db.cash)db.cash={};
 function save(){try{localStorage.setItem(KEY,JSON.stringify(db));}catch(e){toast('Save nahi hua!')}if(window.Cloud)window.Cloud.later()}
 function SY(){return db.sync=db.sync||{tx:{},del:{},bal:{},set:0,first:false}}
 function markTx(id){SY().tx[id]=Date.now()}
 function markBal(k){SY().bal[k]=Date.now()}
+function markMv(id){const S=SY();(S.mv=S.mv||{})[id]=Date.now()}
+function markCash(k){const S=SY();(S.cash=S.cash||{})[k]=Date.now()}
 function toast(t){const el=$('toast');el.textContent=T(t);el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',2200)}
 
 let editId=null,feeTouched=false,bankTouched=false;
@@ -514,6 +591,79 @@ $('srch').addEventListener('input',()=>{renderOld();applyLang($('oldList'))});
 function renderSettings(){const s=db.settings;$('sName').value=s.name;$('sRate').value=s.rate;$('sMin').value=s.min;$('sBank').value=s.bank;$('sLang').value=LANG||'ru';$('shopName').textContent=$('dShop').textContent=s.name||T('Easy Paisa Hisaab')}
 $('saveSet').onclick=()=>{const np=$('sPin').value.trim();if(np&&!/^\d{4}$/.test(np))return toast('PIN 4 number ka hona chahiye');const oldPin=db.settings.pin||'1234';db.settings={pin:np||oldPin,name:$('sName').value.trim(),rate:num($('sRate').value),min:num($('sMin').value),bank:num($('sBank').value)};$('sPin').value='';SY().set=Date.now();save();setLang($('sLang').value);toast('Settings save ✅')};
 
+
+// ===== Galla / Cash + Investors =====
+const MVIN={jeb:'Apni jeb se',loan:'Loan',ghar:'Ghar walon se',other:'Koi aur'};
+const MVOUT={bank:'Bank mein jama',exp:'Kharcha / Ghar',loanback:'Loan wapas diya',out:'Koi aur',inv:'Investor ko diye'};
+const isIn=m=>m.kind==='in';
+function cashCalc(){
+  const k=dayKey(),days=Object.keys(db.cash).filter(d=>d<=k&&db.cash[d]&&db.cash[d].open!=null).sort();
+  if(!days.length)return null;
+  const D=days[days.length-1],open=num(db.cash[D].open);
+  const tx=db.tx.filter(t=>t.day>=D&&t.day<=k),cust=tx.reduce((a,t)=>a+num(t.amount)+num(t.fee),0);
+  const mv=db.mv.filter(m=>m.day>=D&&m.day<=k);
+  const inn=mv.filter(isIn).reduce((a,m)=>a+num(m.amount),0),out=mv.filter(m=>!isIn(m)).reduce((a,m)=>a+num(m.amount),0);
+  return{D,open,cust,inn,out,now:open+cust+inn-out}}
+function chipVal(id){const b=$(id).querySelector('.on');return b?b.dataset.v:''}
+function chipSet(id,fn){$(id).querySelectorAll('button').forEach(b=>b.onclick=()=>{$(id).querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));fn&&fn(b.dataset.v)})}
+function inSrcChanged(v){$('inWhoF').style.display=v==='jeb'?'none':'flex';$('inWhoL').textContent=T(v==='loan'?'Kis se liya':v==='ghar'?'Ghar mein kis se':'Kahan se')}
+function outKindChanged(v){$('outWhoF').style.display=(v==='loanback'||v==='out')?'flex':'none';$('outWhoL').textContent=T(v==='loanback'?'Kis ko wapas diya':'Kis ko / kis liye')}
+chipSet('inSrc',inSrcChanged);chipSet('outKind',outKindChanged);
+$('btnIn').onclick=()=>{$('fIn').classList.toggle('show');$('fOut').classList.remove('show')};
+$('btnOut').onclick=()=>{$('fOut').classList.toggle('show');$('fIn').classList.remove('show')};
+function addMv(o){const id=Date.now()+''+Math.floor(Math.random()*1000);db.mv.push(Object.assign({id,ts:Date.now(),day:dayKey(),src:'',who:'',note:''},o));markMv(id);return id}
+$('saveIn').onclick=()=>{const a=num($('inAmt').value),src=chipVal('inSrc'),who=$('inWho').value.trim();
+  if(a<=0)return toast('Raqam likhein');if(src==='loan'&&!who)return toast('Naam likhein');
+  addMv({kind:'in',src,who:src==='jeb'?'':who,amount:a,note:$('inNote').value.trim()});
+  ['inAmt','inWho','inNote'].forEach(i=>$(i).value='');$('fIn').classList.remove('show');save();renderCash();toast('Save ho gaya ✅')};
+$('saveOut').onclick=()=>{const a=num($('outAmt').value),kind=chipVal('outKind'),who=$('outWho').value.trim();
+  if(a<=0)return toast('Raqam likhein');if(kind==='loanback'&&!who)return toast('Naam likhein');
+  addMv({kind,who:(kind==='loanback'||kind==='out')?who:'',amount:a,note:$('outNote').value.trim()});
+  if(kind==='bank'){const k=dayKey();db.bal[k]=db.bal[k]||{open:null,add:0};db.bal[k].add=num(db.bal[k].add)+a;markBal(k)}
+  ['outAmt','outWho','outNote'].forEach(i=>$(i).value='');$('fOut').classList.remove('show');save();renderCash();renderToday();toast('Save ho gaya ✅')};
+$('saveCashOpen').onclick=()=>{const k=dayKey();db.cash[k]={open:num($('cashOpen').value)};markCash(k);save();renderCash();toast('Save ho gaya ✅')};
+window.delMv=id=>{if(!confirm(T('Yeh entry delete karni hai?')))return;const m=db.mv.find(x=>x.id===id);if(!m)return;
+  if(m.kind==='bank'&&db.bal[m.day]){db.bal[m.day].add=Math.max(0,num(db.bal[m.day].add)-num(m.amount));markBal(m.day)}
+  const S=SY();(S.mvdel=S.mvdel||{})[id]=m;if(S.mv)delete S.mv[id];db.mv=db.mv.filter(x=>x.id!==id);save();renderCash();renderInv();renderToday();toast('Delete ho gayi')};
+function mvLabel(m){return isIn(m)?T(MVIN[m.src]||'Paise daale'):T(MVOUT[m.kind]||m.kind)}
+function mvHtml(m,showDay){const p=isIn(m);
+  return `<div class="mv"><div class="t"><b>${mvLabel(m)}${m.who?' · '+esc(m.who):''}</b><span>${showDay?niceDay(m.day)+' ':''}${time(m.ts)}${m.note?' · '+esc(m.note):''}</span></div>
+  <span class="a ${p?'p':'m'}" dir="ltr">${p?'+':'−'} ${rs(m.amount)}</span>${m.kind==='inv'?`<button class="w" onclick="waInv('${m.id}')">📲</button>`:''}<button class="x" onclick="delMv('${m.id}')">🗑️</button></div>`}
+function names(f){return [...new Set(db.mv.filter(f).map(m=>m.who).filter(Boolean))].sort()}
+function renderCash(){
+  const c=cashCalc(),k=dayKey();$('cashOpen').value=db.cash[k]&&db.cash[k].open!=null?db.cash[k].open:'';
+  if(!c){$('cashNow').textContent='—';$('cashBig').classList.remove('neg');$('tCash').textContent=T('Galle ka hisaab');
+    $('cashBox').innerHTML='<p class="note">'+T('Subah galle ka cash likh kar Save dabayein, phir baqi khud nikalta rahega.')+'</p>'}
+  else{$('cashNow').textContent=rs(c.now);$('cashBig').classList.toggle('neg',c.now<0);$('tCash').textContent=T('Galle mein')+' '+rs(c.now);
+    $('cashBox').innerHTML=`<div class="r"><span>${T('Subah ka cash')}${c.D!==k?' ('+niceDay(c.D)+')':''}</span><span>${rs(c.open)}</span></div>
+    <div class="r"><span>${T('Customers se mila')}</span><span>+ ${rs(c.cust)}</span></div>
+    <div class="r"><span>${T('Paise daale')}</span><span>+ ${rs(c.inn)}</span></div>
+    <div class="r"><span>${T('Paise nikale')}</span><span>− ${rs(c.out)}</span></div>`}
+  const today=db.mv.filter(m=>m.day===k).sort((a,b)=>b.ts-a.ts);
+  $('mvList').innerHTML=today.length?today.map(m=>mvHtml(m)).join(''):emptyHtml('🧾','Aaj koi len den nahi.');
+  const L={};db.mv.forEach(m=>{if(m.kind==='in'&&m.src==='loan'&&m.who){(L[m.who]=L[m.who]||{l:0,b:0}).l+=num(m.amount)}if(m.kind==='loanback'&&m.who){(L[m.who]=L[m.who]||{l:0,b:0}).b+=num(m.amount)}});
+  const ln=Object.keys(L).sort();
+  $('loanList').innerHTML=ln.length?ln.map(n=>{const x=L[n],baqi=x.l-x.b;return `<div class="mv"><div class="t"><b>${esc(n)}</b><span>${T('Liya')} ${rs(x.l)} · ${T('Wapas diya')} ${rs(x.b)}</span></div><span class="a ${baqi>0?'m':'p'}">${baqi>0?T('Baqi')+' '+rs(baqi):T('Pura ✅')}</span></div>`}).join(''):emptyHtml('🤝','Koi loan nahi.');
+  $('loanNames').innerHTML=names(m=>m.src==='loan'||m.kind==='loanback').map(n=>`<option value="${esc(n)}">`).join('');
+  applyLang($('p-cash'))}
+$('saveInv').onclick=()=>{const who=$('ivWho').value.trim(),a=num($('ivAmt').value);
+  if(!who)return toast('Naam likhein');if(a<=0)return toast('Raqam likhein');
+  addMv({kind:'inv',who,amount:a,note:$('ivNote').value.trim()});['ivAmt','ivNote'].forEach(i=>$(i).value='');
+  save();renderInv();renderCash();toast('Save ho gaya ✅')};
+window.waInv=id=>{const m=db.mv.find(x=>x.id===id);if(!m)return;
+  const tot=db.mv.filter(x=>x.kind==='inv'&&x.who===m.who).reduce((a,x)=>a+num(x.amount),0);
+  const msg=`*${db.settings.name||'Easy Paisa'}*\n${T('Investor Raseed')}\n${T('Naam')}: ${m.who}\n${T('Tareekh')}: ${niceDay(m.day)} ${time(m.ts)}\n${T('Aaj diye')}: ${rs(m.amount)}\n${T('Ab tak kul diye')}: ${rs(tot)}${m.note?'\n'+m.note:''}\n${T('Shukriya!')}`;
+  open('https://wa.me/?text='+encodeURIComponent(msg),'_blank')};
+function renderInv(){
+  const inv=db.mv.filter(m=>m.kind==='inv'),by={};inv.forEach(m=>(by[m.who]=by[m.who]||[]).push(m));
+  const mk=dayKey().slice(0,7),month=inv.filter(m=>m.day.startsWith(mk)).reduce((a,m)=>a+num(m.amount),0);
+  $('tInv').textContent=T('Is mahine')+' '+rs(month);
+  const ns=Object.keys(by).sort();
+  $('invList').innerHTML=ns.length?`<p class="note" style="margin-bottom:8px">${T('Is mahine kul diye')}: <b>${rs(month)}</b></p>`+ns.map(n=>{const l=by[n].sort((a,b)=>b.ts-a.ts),tot=l.reduce((a,m)=>a+num(m.amount),0);
+    return `<details><summary><span>${esc(n)}<span class="sm">${l.length} ${T('dafa')} · ${T('Aakhri')}: ${niceDay(l[0].day)}</span></span><span class="p">${rs(tot)}</span></summary>${l.map(m=>mvHtml(m,true)).join('')}</details>`}).join(''):emptyHtml('🤝','Abhi koi investor entry nahi.');
+  $('invNames').innerHTML=names(m=>m.kind==='inv').map(n=>`<option value="${esc(n)}">`).join('');
+  applyLang($('p-inv'))}
+
 // Backup
 const BKN={day:'Aaj',week:'Hafta',month:'Mahina',all:'Poora'};
 function bkRange(k){const now=new Date(),today=dayKey();
@@ -524,7 +674,8 @@ function bkRange(k){const now=new Date(),today=dayKey();
 async function doBackup(k){
   const [a,b]=bkRange(k),tx=db.tx.filter(t=>t.day>=a&&t.day<=b),bal={};
   Object.keys(db.bal).forEach(d=>{if(d>=a&&d<=b)bal[d]=db.bal[d]});
-  const data={app:'ep-hisaab',kind:k,from:a,to:b,made:Date.now(),settings:db.settings,tx,bal};
+  const mv=db.mv.filter(m=>m.day>=a&&m.day<=b),cash={};Object.keys(db.cash).forEach(d=>{if(d>=a&&d<=b)cash[d]=db.cash[d]});
+  const data={app:'ep-hisaab',kind:k,from:a,to:b,made:Date.now(),settings:db.settings,tx,bal,mv,cash};
   const [y,m,d]=dayKey().split('-'),name=`EP-${BKN[k]}-${+d}-${MONTHS[m-1]}-${y}.json`;
   const file=new File([JSON.stringify(data)],name,{type:'application/json'});
   db.lastBackup=Date.now();save();renderBackup();
@@ -541,6 +692,8 @@ $('impBtn').onclick=()=>$('impFile').click();
 $('impFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.tx))throw 0;
   const have=new Set(db.tx.map(t=>t.id));let n=0;d.tx.forEach(t=>{if(!have.has(t.id)){db.tx.push(t);markTx(t.id);n++}});
   Object.keys(d.bal||{}).forEach(k=>{if(!db.bal[k]){db.bal[k]=d.bal[k];markBal(k)}});
+  const hm=new Set(db.mv.map(m=>m.id));(d.mv||[]).forEach(m=>{if(!hm.has(m.id)){db.mv.push(m);markMv(m.id);n++}});
+  Object.keys(d.cash||{}).forEach(k=>{if(!db.cash[k]){db.cash[k]=d.cash[k];markCash(k)}});
   if(!db.tx.length&&!db.settings.name&&d.settings)db.settings=Object.assign({},db.settings,d.settings);
   save();renderAll();toast(n+' '+T('nayi entries jod di gayin ✅'))}catch(x){toast('Ghalat file')}e.target.value=''};r.readAsText(f)};
 
@@ -604,6 +757,10 @@ window.Cloud=(()=>{
     rows.forEach(r=>{if(r.deleted||have.has(r.id)||S.del[r.id])return;db.tx.push({id:r.id,ts:+r.ts,day:r.day,name:r.name,number:r.number,amount:+r.amount,fee:+r.fee,bank:+r.bank,tid:r.tid});n++});
     const bals=await api('/rest/v1/ep_bal?select=*&user_id=eq.'+sess.uid);
     bals.forEach(b=>{if(!db.bal[b.day])db.bal[b.day]={open:b.open==null?null:+b.open,add:+b.add}});
+    const mvs=await api('/rest/v1/ep_mv?select=*&user_id=eq.'+sess.uid+'&limit=100000'),hm=new Set(db.mv.map(m=>String(m.id))),S2=SY();
+    mvs.forEach(r=>{if(r.deleted||hm.has(r.id)||(S2.mvdel&&S2.mvdel[r.id]))return;db.mv.push({id:r.id,ts:+r.ts,day:r.day,kind:r.kind,src:r.src,who:r.who,amount:+r.amount,note:r.note});n++});
+    const cs=await api('/rest/v1/ep_cash?select=*&user_id=eq.'+sess.uid);
+    cs.forEach(c=>{if(!db.cash[c.day])db.cash[c.day]={open:c.open==null?null:+c.open}});
     const se=await api('/rest/v1/ep_settings?select=data&user_id=eq.'+sess.uid);
     if(se[0]&&!db.settings.name&&se[0].data)Object.assign(db.settings,se[0].data,{pin:db.settings.pin});
     return n}
@@ -612,25 +769,37 @@ window.Cloud=(()=>{
     const c=st();if(busy||!sess||!navigator.onLine||c.active===false||c.registered===false||c.online===false){note();return}
     busy=true;const S=SY();
     try{
+      S.mv=S.mv||{};S.mvdel=S.mvdel||{};S.cash=S.cash||{};
+      if(!S.mvFirst){db.mv.forEach(m=>S.mv[m.id]=S.mv[m.id]||1);Object.keys(db.cash).forEach(k=>S.cash[k]=S.cash[k]||1)}
       if(!S.first){db.tx.forEach(t=>S.tx[t.id]=S.tx[t.id]||1);Object.keys(db.bal).forEach(k=>S.bal[k]=S.bal[k]||1);S.set=S.set||1;
         const n=await pull();if(n)renderAll()}
-      const snap={tx:Object.assign({},S.tx),del:Object.assign({},S.del),bal:Object.assign({},S.bal),set:S.set};
+      const snap={tx:Object.assign({},S.tx),del:Object.assign({},S.del),bal:Object.assign({},S.bal),set:S.set,mv:Object.assign({},S.mv),mvdel:Object.assign({},S.mvdel),cash:Object.assign({},S.cash)};
       const byId=new Map(db.tx.map(t=>[String(t.id),t]));
       const rows=Object.keys(snap.tx).map(id=>byId.get(String(id))).filter(Boolean).map(t=>txRow(t,false))
         .concat(Object.values(snap.del).map(t=>txRow(t,true)));
       for(let i=0;i<rows.length;i+=400)await upsert('ep_tx',rows.slice(i,i+400),'user_id,id');
       const brows=Object.keys(snap.bal).filter(k=>db.bal[k]).map(k=>({user_id:sess.uid,day:k,open:db.bal[k].open==null?null:num(db.bal[k].open),add:num(db.bal[k].add),updated_at:new Date().toISOString()}));
       if(brows.length)await upsert('ep_bal',brows,'user_id,day');
+      const mvById=new Map(db.mv.map(m=>[String(m.id),m])),now=new Date().toISOString();
+      const mvRow=(m,del)=>({user_id:sess.uid,id:String(m.id),ts:Math.round(num(m.ts))||Date.now(),day:m.day||dayKey(),kind:m.kind||'out',src:m.src||'',who:m.who||'',amount:num(m.amount),note:m.note||'',deleted:!!del,updated_at:now});
+      const mrows=Object.keys(snap.mv).map(id=>mvById.get(String(id))).filter(Boolean).map(m=>mvRow(m,false)).concat(Object.values(snap.mvdel).map(m=>mvRow(m,true)));
+      for(let i=0;i<mrows.length;i+=400)await upsert('ep_mv',mrows.slice(i,i+400),'user_id,id');
+      const crows=Object.keys(snap.cash).filter(k=>db.cash[k]).map(k=>({user_id:sess.uid,day:k,open:db.cash[k].open==null?null:num(db.cash[k].open),updated_at:now}));
+      if(crows.length)await upsert('ep_cash',crows,'user_id,day');
       if(snap.set){const d=Object.assign({},db.settings);delete d.pin;await upsert('ep_settings',[{user_id:sess.uid,data:d,updated_at:new Date().toISOString()}],'user_id')}
       Object.keys(snap.tx).forEach(id=>{if(S.tx[id]===snap.tx[id])delete S.tx[id]});
       Object.keys(snap.del).forEach(id=>delete S.del[id]);
       Object.keys(snap.bal).forEach(k=>{if(S.bal[k]===snap.bal[k])delete S.bal[k]});
       if(S.set===snap.set)S.set=0;
+      Object.keys(snap.mv).forEach(id=>{if(S.mv[id]===snap.mv[id])delete S.mv[id]});
+      Object.keys(snap.mvdel).forEach(id=>delete S.mvdel[id]);
+      Object.keys(snap.cash).forEach(k=>{if(S.cash[k]===snap.cash[k])delete S.cash[k]});
+      S.mvFirst=true;
       S.first=true;S.last=Date.now();try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}
     }catch(e){console.log('sync',e)}
     finally{busy=false;note()}}
 
-  function pending(){const S=SY();return Object.keys(S.tx).length+Object.keys(S.del).length}
+  function pending(){const S=SY();return Object.keys(S.tx).length+Object.keys(S.del).length+Object.keys(S.mv||{}).length+Object.keys(S.mvdel||{}).length}
   function note(){const el=$('syncNote');if(!el)return;if(!sess){el.style.display='none';return}
     const c=st(),p=pending();el.style.display='block';
     el.textContent=c.online===false?T('☁️ Online band (sirf phone mein)'):(p||!SY().first)?T('☁️ Online bhejni baqi')+(p?' ('+p+')':''):T('☁️ Sab entries online mehfooz hain')}
@@ -645,7 +814,7 @@ window.Cloud=(()=>{
     ping().then(sync)}
   return{start,sync,later,note,ping}})();
 
-function go(p){document.querySelectorAll('.page').forEach(s=>s.classList.toggle('show',s.id===p));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('act',b.dataset.p===p));if(p==='p-old'){renderOld();applyLang($('oldList'))}if(p==='p-today'||p==='p-bank'||p==='p-home')renderToday();scrollTo(0,0)}
+function go(p){document.querySelectorAll('.page').forEach(s=>s.classList.toggle('show',s.id===p));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('act',b.dataset.p===p));if(p==='p-old'){renderOld();applyLang($('oldList'))}if(p==='p-today'||p==='p-bank'||p==='p-home')renderToday();if(p==='p-cash'||p==='p-home')renderCash();if(p==='p-inv')renderInv();scrollTo(0,0)}
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.p));
 
@@ -682,7 +851,7 @@ $('menuBtn').onclick=()=>menu(true);$('dimmer').onclick=()=>menu(false);
 document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{menu(false);const m=b.dataset.m;if(m==='lang')openLang();else go(m)});
 $('logoutBtn').onclick=()=>{menu(false);lockApp();toast('Logout ho gaya')};
 
-function renderAll(){renderSettings();renderToday();renderBackup();if($('p-old').classList.contains('show'))renderOld();applyLang()}
+function renderAll(){renderSettings();renderToday();renderBackup();renderCash();renderInv();if($('p-old').classList.contains('show'))renderOld();applyLang()}
 function openLang(){document.querySelectorAll('.lopt').forEach(b=>b.classList.toggle('on',b.dataset.l===LANG));$('langPop').classList.add('show')}
 $('langBtn').onclick=openLang;
 document.querySelectorAll('.lopt').forEach(b=>b.onclick=()=>setLang(b.dataset.l));
