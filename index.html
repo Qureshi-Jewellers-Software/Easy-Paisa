@@ -331,7 +331,7 @@ html[dir=rtl] .rdot{right:auto;left:12px}
   <p>This app now works only from the installed APK.</p>
 </div>
 <div class="login" id="login"><div class="pop">
-  <div class="logo">Rs</div>
+  <div class="logo" data-adm>Rs</div>
   <h3>Login karein</h3><p>Pehli dafa login ke liye internet chahiye</p>
   <div class="field"><div class="lbl"><label>Username</label><input id="lUser" autocapitalize="off" autocomplete="username"></div></div>
   <div class="field"><div class="lbl"><label>Password</label><input id="lPass" type="password" autocomplete="current-password"></div><button type="button" class="eye" id="lEye" aria-label="Password">👁️</button></div>
@@ -345,7 +345,7 @@ html[dir=rtl] .rdot{right:auto;left:12px}
 </div>
 <div class="dimmer" id="dimmer"></div>
 <aside class="drawer" id="drawer">
-  <div class="dhead"><div class="logo">Rs</div><b id="dShop">Easy Paisa Hisaab</b><small id="dDate"></small></div>
+  <div class="dhead"><div class="logo" data-adm>Rs</div><b id="dShop">Easy Paisa Hisaab</b><small id="dDate"></small></div>
   <div class="dlist">
     <button data-m="p-home"><i>🏠</i>Home</button>
     <button data-m="p-new"><i>💸</i>Nayi Payment</button>
@@ -691,6 +691,12 @@ if(window.EP_BLOCKED){$('block').classList.add('show');throw 'blocked'}
 renderAll();updateCalc();applyLang();
 (()=>{let u=null;try{u=localStorage.getItem('ep_unlocked')}catch(e){};if(u)$('lock').classList.remove('show'),(!LANG&&openLang());else lockApp()})();
 Cloud.start();
+// Admin ka chhupa rasta: "Rs" logo ko 2 second dabaye rakhein
+document.querySelectorAll('[data-adm]').forEach(el=>{let t;const go=()=>{location.href='admin.html'};
+  el.addEventListener('touchstart',()=>{t=setTimeout(go,2000)},{passive:true});
+  el.addEventListener('mousedown',()=>{t=setTimeout(go,2000)});
+  ['touchend','touchmove','mouseup','mouseleave'].forEach(e=>el.addEventListener(e,()=>clearTimeout(t)));
+  el.addEventListener('contextmenu',e=>e.preventDefault());el.style.userSelect='none';el.style.webkitUserSelect='none'});
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
