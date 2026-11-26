@@ -33,6 +33,9 @@ input:focus{border-color:var(--g)}
 .acts button{flex:1;border:0;border-radius:12px;padding:11px 6px;font-size:13px;font-weight:600}
 .b-red{background:#fdecec;color:var(--red)}.b-green{background:var(--gl);color:var(--g2)}.b-or{background:#fff4e5;color:#d9650b}.b-blue{background:#e8f2fd;color:#1a56c4}
 .hide{display:none}
+details.cl summary{list-style:none;cursor:pointer}details.cl summary::-webkit-details-marker{display:none}
+details.cl .arr{color:var(--mut);transition:.2s}details.cl[open] .arr{transform:rotate(180deg)}
+details.cl[open] summary{margin-bottom:4px}
 .eye{position:absolute;right:6px;top:5px;width:40px;height:40px;border:0;background:none;font-size:18px;opacity:.55}.eye.on{opacity:1}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1d2421;color:#fff;padding:10px 18px;border-radius:30px;font-size:13px;display:none}
 </style>
@@ -49,14 +52,15 @@ input:focus{border-color:var(--g)}
   </div>
 
   <div id="panel" class="hide">
-    <div class="card">
-      <h2>➕ Naya client</h2>
+    <details class="card cl">
+      <summary class="top"><h2 style="margin:0">➕ Naya client</h2><span class="arr">▾</span></summary>
+      <div style="height:10px"></div>
       <p class="note" style="margin-bottom:10px">1) Supabase → Authentication → Users → <b>Add user</b> → email jaise <b>ali@ephisaab.app</b>, password, <b>Auto Confirm</b> on.<br>2) Yahan wahi email aur dukaan ka naam likh kar "Client banayein" dabayein.<br>3) Client ko username <b>ali</b> aur password de dein.</p>
       <input id="nEm" placeholder="Email (jaise ali@ephisaab.app)" autocapitalize="off">
       <input id="nNm" placeholder="Dukaan ka naam">
       <div class="err" id="nErr"></div>
       <button class="btn" id="nBtn">Client banayein</button>
-    </div>
+    </details>
     <div style="display:flex;justify-content:space-between;align-items:center;margin:4px 4px 10px"><b>Clients</b><button class="acts b-blue" id="refBtn" style="border:0;border-radius:10px;padding:7px 12px;font-weight:600">🔄 Refresh</button></div>
     <div id="list"></div>
   </div>
@@ -85,7 +89,7 @@ async function load(){
     $('list').innerHTML=rows.length?rows.map(c=>{
       const st=!c.active?'<span class="tag off">BAND</span>':!c.online?'<span class="tag ofl">OFFLINE</span>':'<span class="tag on">ONLINE</span>';
       const pt=c.phone_day===todayK()?c.phone_today:0;
-      return `<div class="card cl"><div class="top"><div><b>${esc(c.name)||'—'}</b><div class="em">${esc(c.email)}</div></div>${st}</div>
+      return `<details class="card cl"><summary class="top"><div><b>${esc(c.name)||'—'}</b><div class="em">${esc(c.email.replace('@ephisaab.app',''))} · ${ago(c.last_open)}</div></div><div style="display:flex;align-items:center;gap:8px">${st}<span class="arr">▾</span></div></summary>
       <div class="grid">
         <div><span>Aakhri dafa khola</span><strong>${ago(c.last_open)}</strong><span>${when(c.last_open)}</span></div>
         <div><span>Kitni dafa khola</span><strong>${c.open_count}</strong><span>7 din: ${c.opens_7d}</span></div>
@@ -97,7 +101,7 @@ async function load(){
         ${c.active?`<button class="b-red" onclick="setC('${c.user_id}',{p_active:false},'Account band karna hai?')">⛔ Band karein</button>`:`<button class="b-green" onclick="setC('${c.user_id}',{p_active:true})">✅ Chalu karein</button>`}
         ${c.online?`<button class="b-or" onclick="setC('${c.user_id}',{p_online:false},'Online sync band karna hai? Data sirf phone mein rahega.')">📴 Offline karein</button>`:`<button class="b-blue" onclick="setC('${c.user_id}',{p_online:true})">☁️ Online karein</button>`}
         <button class="b-blue" style="flex:0 0 46px" onclick="ren('${c.user_id}','${esc(c.name)}')">✏️</button>
-      </div></div>`}).join(''):'<div class="card note">Abhi koi client nahi.</div>';
+      </div></details>`}).join(''):'<div class="card note">Abhi koi client nahi.</div>';
   }catch(e){toast(e.message)}}
 window.setC=async(id,a,q)=>{if(q&&!confirm(q))return;try{await rpc('ep_admin_set',Object.assign({p_user:id},a));toast('Ho gaya ✅');load()}catch(e){toast(e.message)}};
 window.ren=async(id,old)=>{const n=prompt('Naya naam',old);if(!n)return;setC(id,{p_name:n})};
