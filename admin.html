@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>EP Hisaab — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--g:#2db14a;--g2:#13923a;--gl:#e9f8ec;--ink:#1d2421;--mut:#7b8580;--bg:#f3f5f4;--red:#e5484d}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Poppins,system-ui,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:40px}
+button{font-family:inherit;cursor:pointer}
+.hero{background:linear-gradient(150deg,#3cc35a,var(--g) 45%,var(--g2));color:#fff;padding:18px;border-radius:0 0 24px 24px;display:flex;justify-content:space-between;align-items:center}
+.hero h1{font-size:17px}.hero small{opacity:.85;font-size:12px}
+.hero button{border:0;background:rgba(255,255,255,.22);color:#fff;border-radius:12px;padding:8px 12px;font-size:13px;font-weight:600}
+main{max-width:620px;margin:14px auto;padding:0 14px}
+.card{background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 2px 10px rgba(20,60,35,.06)}
+.card h2{font-size:15px;margin-bottom:10px}
+input{width:100%;border:1.5px solid #e2e8e4;border-radius:12px;padding:12px;font-size:15px;font-family:inherit;margin-bottom:8px;outline:none}
+input:focus{border-color:var(--g)}
+.btn{width:100%;border:0;border-radius:14px;padding:13px;background:linear-gradient(135deg,#38c057,var(--g2));color:#fff;font-weight:600;font-size:15px}
+.err{color:var(--red);font-size:13px;min-height:18px;margin-bottom:6px}
+.note{font-size:12px;color:var(--mut);line-height:1.6}
+.cl .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.cl b{font-size:15px}.cl .em{font-size:12px;color:var(--mut);word-break:break-all}
+.tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.on{background:var(--gl);color:var(--g2)}.off{background:#fdecec;color:var(--red)}.ofl{background:#fff4e5;color:#d9650b}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.grid div{background:#f7f9f8;border-radius:12px;padding:9px 10px}
+.grid span{display:block;font-size:11px;color:var(--mut)}.grid strong{font-size:14px}
+.acts{display:flex;gap:8px}
+.acts button{flex:1;border:0;border-radius:12px;padding:11px 6px;font-size:13px;font-weight:600}
+.b-red{background:#fdecec;color:var(--red)}.b-green{background:var(--gl);color:var(--g2)}.b-or{background:#fff4e5;color:#d9650b}.b-blue{background:#e8f2fd;color:#1a56c4}
+.hide{display:none}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1d2421;color:#fff;padding:10px 18px;border-radius:30px;font-size:13px;display:none}
+</style>
+</head>
+<body>
+<div class="hero"><div><h1>EP Hisaab — Admin</h1><small id="who">Login karein</small></div><button id="outBtn" class="hide">Logout</button></div>
+<main>
+  <div class="card" id="loginCard">
+    <h2>Admin Login</h2>
+    <input id="em" type="email" placeholder="Admin email" autocomplete="username">
+    <input id="pw" type="password" placeholder="Password" autocomplete="current-password">
+    <div class="err" id="lErr"></div>
+    <button class="btn" id="lBtn">Login</button>
+  </div>
+
+  <div id="panel" class="hide">
+    <div class="card">
+      <h2>➕ Naya client</h2>
+      <p class="note" style="margin-bottom:10px">1) Supabase → Authentication → Users → <b>Add user</b> → email jaise <b>ali@ephisaab.app</b>, password, <b>Auto Confirm</b> on.<br>2) Yahan wahi email aur dukaan ka naam likh kar "Client banayein" dabayein.<br>3) Client ko username <b>ali</b> aur password de dein.</p>
+      <input id="nEm" placeholder="Email (jaise ali@ephisaab.app)" autocapitalize="off">
+      <input id="nNm" placeholder="Dukaan ka naam">
+      <div class="err" id="nErr"></div>
+      <button class="btn" id="nBtn">Client banayein</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:4px 4px 10px"><b>Clients</b><button class="acts b-blue" id="refBtn" style="border:0;border-radius:10px;padding:7px 12px;font-weight:600">🔄 Refresh</button></div>
+    <div id="list"></div>
+  </div>
+</main>
+<div class="toast" id="toast"></div>
+<script>
+const SB_URL='https://nkfxdznmzsrsircqutda.supabase.co',SB_KEY='sb_publishable_IpyjtvFcq_gEgw4w5TBhyg_i4uOpJ6O',SESS='ep_admin_sess';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',2500)}
+let sess=null;try{sess=JSON.parse(localStorage.getItem(SESS)||'null')}catch(e){}
+const keep=s=>{sess=s;s?localStorage.setItem(SESS,JSON.stringify(s)):localStorage.removeItem(SESS)};
+async function auth(body,grant){const r=await fetch(SB_URL+'/auth/v1/token?grant_type='+grant,{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error_description||j.msg||'Login nahi hua');return{at:j.access_token,rt:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000,email:j.user&&j.user.email}}
+async function token(){if(Date.now()>sess.exp-60000){try{keep(await auth({refresh_token:sess.rt},'refresh_token'))}catch(e){logout();throw e}}return sess.at}
+async function rpc(fn,args){const r=await fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+await token(),'Content-Type':'application/json'},body:JSON.stringify(args||{})});
+  const t=await r.text();let j=null;try{j=t?JSON.parse(t):null}catch(e){}if(!r.ok)throw new Error((j&&j.message)||t||('Error '+r.status));return j}
+
+const ago=ts=>{if(!ts)return 'Kabhi nahi';const m=Math.round((Date.now()-new Date(ts))/60000);
+  if(m<1)return 'Abhi';if(m<60)return m+' min pehle';const h=Math.round(m/60);if(h<24)return h+' ghante pehle';return Math.round(h/24)+' din pehle'};
+const when=ts=>ts?new Date(ts).toLocaleString('en-PK',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}):'—';
+const todayK=()=>new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Karachi'});
+
+async function load(){
+  try{const rows=await rpc('ep_admin_list');
+    $('list').innerHTML=rows.length?rows.map(c=>{
+      const st=!c.active?'<span class="tag off">BAND</span>':!c.online?'<span class="tag ofl">OFFLINE</span>':'<span class="tag on">ONLINE</span>';
+      const pt=c.phone_day===todayK()?c.phone_today:0;
+      return `<div class="card cl"><div class="top"><div><b>${esc(c.name)||'—'}</b><div class="em">${esc(c.email)}</div></div>${st}</div>
+      <div class="grid">
+        <div><span>Aakhri dafa khola</span><strong>${ago(c.last_open)}</strong><span>${when(c.last_open)}</span></div>
+        <div><span>Kitni dafa khola</span><strong>${c.open_count}</strong><span>7 din: ${c.opens_7d}</span></div>
+        <div><span>Phone mein entries</span><strong>${c.phone_entries}</strong><span>Aaj: ${pt}</span></div>
+        <div><span>Online entries</span><strong>${c.cloud_entries}</strong><span>Aaj: ${c.cloud_today}</span></div>
+        <div style="grid-column:1/3"><span>Aakhri entry</span><strong>${c.last_entry?when(+c.last_entry):'—'}</strong></div>
+      </div>
+      <div class="acts">
+        ${c.active?`<button class="b-red" onclick="setC('${c.user_id}',{p_active:false},'Account band karna hai?')">⛔ Band karein</button>`:`<button class="b-green" onclick="setC('${c.user_id}',{p_active:true})">✅ Chalu karein</button>`}
+        ${c.online?`<button class="b-or" onclick="setC('${c.user_id}',{p_online:false},'Online sync band karna hai? Data sirf phone mein rahega.')">📴 Offline karein</button>`:`<button class="b-blue" onclick="setC('${c.user_id}',{p_online:true})">☁️ Online karein</button>`}
+        <button class="b-blue" style="flex:0 0 46px" onclick="ren('${c.user_id}','${esc(c.name)}')">✏️</button>
+      </div></div>`}).join(''):'<div class="card note">Abhi koi client nahi.</div>';
+  }catch(e){toast(e.message)}}
+window.setC=async(id,a,q)=>{if(q&&!confirm(q))return;try{await rpc('ep_admin_set',Object.assign({p_user:id},a));toast('Ho gaya ✅');load()}catch(e){toast(e.message)}};
+window.ren=async(id,old)=>{const n=prompt('Naya naam',old);if(!n)return;setC(id,{p_name:n})};
+
+$('nBtn').onclick=async()=>{let em=$('nEm').value.trim().toLowerCase(),nm=$('nNm').value.trim();$('nErr').textContent='';
+  if(!em||!nm){$('nErr').textContent='Email aur naam dono likhein';return}if(!em.includes('@'))em+='@ephisaab.app';
+  try{await rpc('ep_admin_add_client',{p_email:em,p_name:nm});$('nEm').value=$('nNm').value='';toast('Client ban gaya ✅');load()}catch(e){$('nErr').textContent=e.message}};
+$('refBtn').onclick=load;
+
+async function enter(){try{const ok=await rpc('is_admin');if(!ok){toast('Yeh admin account nahi');logout();return}
+  $('loginCard').classList.add('hide');$('panel').classList.remove('hide');$('outBtn').classList.remove('hide');$('who').textContent=sess.email||'';load()}catch(e){toast(e.message)}}
+function logout(){keep(null);$('panel').classList.add('hide');$('loginCard').classList.remove('hide');$('outBtn').classList.add('hide');$('who').textContent='Login karein'}
+$('outBtn').onclick=logout;
+$('lBtn').onclick=async()=>{$('lErr').textContent='';try{keep(await auth({email:$('em').value.trim(),password:$('pw').value},'password'));$('pw').value='';enter()}catch(e){$('lErr').textContent=e.message}};
+if(sess)enter();
+</script>
+</body>
+</html>
