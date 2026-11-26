@@ -192,6 +192,7 @@ html[dir=rtl] .rdot{right:auto;left:12px}
 .login .logo{width:60px;height:60px;font-size:20px;border-radius:18px;margin:0 auto 12px;background:var(--gl)}
 .login .field{text-align:start}
 .login .err{color:var(--red);font-size:13px;min-height:18px;margin:4px 0 8px}
+.eye{flex:0 0 40px;height:40px;border:0;background:none;font-size:18px;opacity:.55}.eye.on{opacity:1}
 .sync{font-size:12px;margin-top:10px;padding:10px 12px;border-radius:12px;background:#eef6ff;color:#1a56c4;font-weight:600}
 </style>
 </head>
@@ -333,7 +334,7 @@ html[dir=rtl] .rdot{right:auto;left:12px}
   <div class="logo">Rs</div>
   <h3>Login karein</h3><p>Pehli dafa login ke liye internet chahiye</p>
   <div class="field"><div class="lbl"><label>Username</label><input id="lUser" autocapitalize="off" autocomplete="username"></div></div>
-  <div class="field"><div class="lbl"><label>Password</label><input id="lPass" type="password" autocomplete="current-password"></div></div>
+  <div class="field"><div class="lbl"><label>Password</label><input id="lPass" type="password" autocomplete="current-password"></div><button type="button" class="eye" id="lEye" aria-label="Password">👁️</button></div>
   <div class="err" id="lErr"></div>
   <button class="btn" id="lBtn">Login</button>
 </div></div>
@@ -586,6 +587,7 @@ window.Cloud=(()=>{
       toast('Login ho gaya ✅');if(!LANG)openLang();await ping();sync()}
     catch(e){$('lErr').textContent=T(e.status?'Ghalat username ya password':'Internet nahi hai')}
     finally{$('lBtn').disabled=false}};
+  $('lEye').onclick=()=>{const i=$('lPass'),sh=i.type==='password';i.type=sh?'text':'password';$('lEye').classList.toggle('on',sh);$('lEye').textContent=sh?'🙈':'👁️'};
   $('pbRetry').onclick=async()=>{await ping();sync()};
 
   async function ping(){

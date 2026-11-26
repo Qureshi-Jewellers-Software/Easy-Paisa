@@ -33,6 +33,7 @@ input:focus{border-color:var(--g)}
 .acts button{flex:1;border:0;border-radius:12px;padding:11px 6px;font-size:13px;font-weight:600}
 .b-red{background:#fdecec;color:var(--red)}.b-green{background:var(--gl);color:var(--g2)}.b-or{background:#fff4e5;color:#d9650b}.b-blue{background:#e8f2fd;color:#1a56c4}
 .hide{display:none}
+.eye{position:absolute;right:6px;top:5px;width:40px;height:40px;border:0;background:none;font-size:18px;opacity:.55}.eye.on{opacity:1}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1d2421;color:#fff;padding:10px 18px;border-radius:30px;font-size:13px;display:none}
 </style>
 </head>
@@ -42,7 +43,7 @@ input:focus{border-color:var(--g)}
   <div class="card" id="loginCard">
     <h2>Admin Login</h2>
     <input id="em" type="email" placeholder="Admin email" autocomplete="username">
-    <input id="pw" type="password" placeholder="Password" autocomplete="current-password">
+    <div style="position:relative"><input id="pw" type="password" placeholder="Password" autocomplete="current-password" style="padding-right:50px"><button type="button" class="eye" data-eye="pw" aria-label="Password dikhayein">👁️</button></div>
     <div class="err" id="lErr"></div>
     <button class="btn" id="lBtn">Login</button>
   </div>
@@ -111,6 +112,7 @@ async function enter(){try{const ok=await rpc('is_admin');if(!ok){toast('Yeh adm
 function logout(){keep(null);$('panel').classList.add('hide');$('loginCard').classList.remove('hide');$('outBtn').classList.add('hide');$('who').textContent='Login karein'}
 $('outBtn').onclick=logout;
 $('lBtn').onclick=async()=>{$('lErr').textContent='';try{keep(await auth({email:$('em').value.trim(),password:$('pw').value},'password'));$('pw').value='';enter()}catch(e){$('lErr').textContent=e.message}};
+document.querySelectorAll('[data-eye]').forEach(b=>b.onclick=()=>{const i=$(b.dataset.eye),s=i.type==='password';i.type=s?'text':'password';b.classList.toggle('on',s);b.textContent=s?'🙈':'👁️'});
 if(sess)enter();
 </script>
 </body>
