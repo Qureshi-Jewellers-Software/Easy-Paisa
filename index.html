@@ -762,19 +762,33 @@ window.Cloud=(()=>{
 
   function txRow(t,del){return{user_id:sess.uid,id:String(t.id),ts:Math.round(num(t.ts))||Date.now(),day:t.day||dayKey(new Date(num(t.ts))),name:t.name||'',number:t.number||'',amount:num(t.amount),fee:num(t.fee),bank:num(t.bank),tid:t.tid||'',deleted:!!del,updated_at:new Date().toISOString()}}
 
+  let needRender=false;
+  function refreshView(){const a=document.activeElement;if(a&&(a.tagName==='INPUT'||a.tagName==='TEXTAREA')){needRender=true;return}
+    needRender=false;renderAll();const cur=document.querySelector('.page.show');if(cur&&cur.id==='p-old'){renderOld();applyLang($('oldList'))}}
+  document.addEventListener('focusout',()=>{if(needRender)setTimeout(()=>{if(needRender)refreshView()},300)});
+  // Server se naya/badla data lao (doosre phone ki entries bhi). cursor = aakhri updated_at
   async function pull(){
-    const rows=await api('/rest/v1/ep_tx?select=*&user_id=eq.'+sess.uid+'&limit=100000');
-    const have=new Set(db.tx.map(t=>String(t.id))),S=SY();let n=0;
-    rows.forEach(r=>{if(r.deleted||have.has(r.id)||S.del[r.id])return;db.tx.push({id:r.id,ts:+r.ts,day:r.day,name:r.name,number:r.number,amount:+r.amount,fee:+r.fee,bank:+r.bank,tid:r.tid});n++});
-    const bals=await api('/rest/v1/ep_bal?select=*&user_id=eq.'+sess.uid);
-    bals.forEach(b=>{if(!db.bal[b.day])db.bal[b.day]={open:b.open==null?null:+b.open,add:+b.add}});
-    const mvs=await api('/rest/v1/ep_mv?select=*&user_id=eq.'+sess.uid+'&limit=100000'),hm=new Set(db.mv.map(m=>String(m.id))),S2=SY();
-    mvs.forEach(r=>{if(r.deleted||hm.has(r.id)||(S2.mvdel&&S2.mvdel[r.id]))return;db.mv.push({id:r.id,ts:+r.ts,day:r.day,kind:r.kind,src:r.src,who:r.who,amount:+r.amount,note:r.note});n++});
-    const cs=await api('/rest/v1/ep_cash?select=*&user_id=eq.'+sess.uid);
-    cs.forEach(c=>{if(!db.cash[c.day])db.cash[c.day]={open:c.open==null?null:+c.open}});
-    const se=await api('/rest/v1/ep_settings?select=data&user_id=eq.'+sess.uid);
-    if(se[0]&&!db.settings.name&&se[0].data)Object.assign(db.settings,se[0].data,{pin:db.settings.pin});
-    return n}
+    const S=SY(),since=S.pullAt?new Date(new Date(S.pullAt).getTime()-5000).toISOString():null;
+    const q=(tbl)=>api('/rest/v1/'+tbl+'?select=*&user_id=eq.'+sess.uid+(since?'&updated_at=gt.'+encodeURIComponent(since):'')+'&order=updated_at.asc&limit=100000');
+    const [tx,mv,bal,cash,se]=await Promise.all([q('ep_tx'),q('ep_mv'),q('ep_bal'),q('ep_cash'),q('ep_settings')]);
+    let ch=0,max=S.pullAt||'';const mx=r=>{if(r.updated_at>max)max=r.updated_at};
+    const dTx=S.tx||{},dDel=S.del||{},dMv=S.mv||{},dMvDel=S.mvdel||{},dBal=S.bal||{},dCash=S.cash||{};
+    tx.forEach(r=>{mx(r);if(dTx[r.id]||dDel[r.id])return;const i=db.tx.findIndex(t=>String(t.id)===r.id);
+      if(r.deleted){if(i>=0){db.tx.splice(i,1);ch++}return}
+      const o={id:r.id,ts:+r.ts,day:r.day,name:r.name,number:r.number,amount:+r.amount,fee:+r.fee,bank:+r.bank,tid:r.tid};
+      if(i<0){db.tx.push(o);ch++}else{const t=db.tx[i];if(t.amount!=o.amount||t.fee!=o.fee||t.name!==o.name||t.number!==o.number||t.tid!==o.tid||t.bank!=o.bank){Object.assign(t,o);ch++}}});
+    mv.forEach(r=>{mx(r);if(dMv[r.id]||dMvDel[r.id])return;const i=db.mv.findIndex(m=>String(m.id)===r.id);
+      if(r.deleted){if(i>=0){db.mv.splice(i,1);ch++}return}
+      const o={id:r.id,ts:+r.ts,day:r.day,kind:r.kind,src:r.src,who:r.who,amount:+r.amount,note:r.note};
+      if(i<0){db.mv.push(o);ch++}else{const m=db.mv[i];if(m.amount!=o.amount||m.who!==o.who||m.note!==o.note||m.kind!==o.kind){Object.assign(m,o);ch++}}});
+    bal.forEach(b=>{mx(b);if(dBal[b.day])return;const o={open:b.open==null?null:+b.open,add:+b.add},c=db.bal[b.day];
+      if(!c||c.open!=o.open||num(c.add)!=o.add){db.bal[b.day]=o;ch++}});
+    cash.forEach(c=>{mx(c);if(dCash[c.day])return;const o={open:c.open==null?null:+c.open},x=db.cash[c.day];
+      if(!x||x.open!=o.open){db.cash[c.day]=o;ch++}});
+    se.forEach(r=>{mx(r);if(S.set||!r.data)return;const pin=db.settings.pin;const before=JSON.stringify(db.settings);
+      db.settings=Object.assign({},db.settings,r.data,{pin});if(JSON.stringify(db.settings)!==before)ch++});
+    if(max)S.pullAt=max;
+    return ch}
 
   async function sync(){
     const c=st();if(busy||!sess||!navigator.onLine||c.active===false||c.registered===false||c.online===false){note();return}
@@ -783,7 +797,8 @@ window.Cloud=(()=>{
       S.mv=S.mv||{};S.mvdel=S.mvdel||{};S.cash=S.cash||{};
       if(!S.mvFirst){db.mv.forEach(m=>S.mv[m.id]=S.mv[m.id]||1);Object.keys(db.cash).forEach(k=>S.cash[k]=S.cash[k]||1)}
       if(!S.first){db.tx.forEach(t=>S.tx[t.id]=S.tx[t.id]||1);Object.keys(db.bal).forEach(k=>S.bal[k]=S.bal[k]||1);S.set=S.set||1;
-        const n=await pull();if(n)renderAll()}
+}
+      const changed=await pull();if(changed){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}refreshView()}
       const snap={tx:Object.assign({},S.tx),del:Object.assign({},S.del),bal:Object.assign({},S.bal),set:S.set,mv:Object.assign({},S.mv),mvdel:Object.assign({},S.mvdel),cash:Object.assign({},S.cash)};
       const byId=new Map(db.tx.map(t=>[String(t.id),t]));
       const rows=Object.keys(snap.tx).map(id=>byId.get(String(id))).filter(Boolean).map(t=>txRow(t,false))
